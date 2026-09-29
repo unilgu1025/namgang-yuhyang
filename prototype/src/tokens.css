@@ -1,0 +1,63 @@
+/* DESIGN.md 색·글꼴 토큰. 모든 게임 페이지가 공유한다. */
+:root {
+  --ink: #040506;
+  --night: #112330;
+  --river: #1c3745;
+  --mist: #484f57;
+  --teal: #1a6179;
+  --teal-glow: #5ca1bc;
+  --amber: #c2824b;
+  --gold: #fcc441;
+  --wick: #fdf6bf;
+  --moon: #e0cdb1;
+  --font-title: 'Gowun Batang', serif;
+  --font-ui: 'Gowun Dodum', system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--ink);
+  color: var(--moon);
+  font: 400 16px/1.5 var(--font-ui);
+  word-break: keep-all;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  border: 1px solid var(--mist);
+  background: rgb(17 35 48 / .9);
+  color: var(--moon);
+  font: 700 17px/1 var(--font-ui);
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform .15s;
+}
+.btn:hover { box-shadow: 0 0 16px rgb(252 196 65 / .25); }
+.btn:active { transform: scale(.97); }
+.btn:focus-visible { outline: 2px solid var(--teal-glow); outline-offset: 3px; }
+.btn.primary { background: var(--gold); color: var(--ink); border-color: transparent; }
+.btn[aria-disabled='true'] { opacity: .55; cursor: not-allowed; box-shadow: none; transform: none; }
+
+.link {
+  color: var(--moon);
+  font-size: 16px;
+  text-underline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

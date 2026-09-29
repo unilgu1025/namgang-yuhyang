@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><defs>
+<radialGradient id="disk" cx="50%" cy="38%" r="62%"><stop offset="0" stop-color="#1c3745"/><stop offset="1" stop-color="#040506"/></radialGradient>
+<radialGradient id="halo"><stop offset=".6" stop-color="#fcc441" stop-opacity=".32"/><stop offset="1" stop-color="#fcc441" stop-opacity="0"/></radialGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf6bf"/><stop offset=".5" stop-color="#fcc441"/><stop offset="1" stop-color="#c2824b"/></linearGradient>
+<filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<circle cx="64" cy="64" r="63" fill="url(#halo)"/>
+<circle cx="64" cy="64" r="45" fill="url(#disk)" stroke="#c2824b" stroke-width="4"/>
+<circle cx="64" cy="64" r="39" fill="none" stroke="#fcc441" stroke-opacity=".35" stroke-width="1.5"/><g stroke="#fcc441" stroke-width="3" stroke-linecap="round" opacity=".85">
+<path d="M64 14 v10 M64 104 v10 M14 64 h10 M104 64 h10 M29 29 l7 7 M92 92 l7 7 M99 29 l-7 7 M36 92 l-7 7"/></g>
+<g filter="url(#glow)" stroke="#c2824b" stroke-width="1.5" stroke-linejoin="round">
+<path d="M64 84 C44 82 32 70 30 56 C44 58 56 66 64 84 Z" fill="url(#gold)"/>
+<path d="M64 84 C84 82 96 70 98 56 C84 58 72 66 64 84 Z" fill="url(#gold)"/>
+<path d="M64 84 C50 76 44 60 48 44 C58 52 64 66 64 84 Z" fill="url(#gold)"/>
+<path d="M64 84 C78 76 84 60 80 44 C70 52 64 66 64 84 Z" fill="url(#gold)"/>
+<path d="M64 84 C56 70 56 50 64 34 C72 50 72 70 64 84 Z" fill="#fdf6bf"/>
+<ellipse cx="64" cy="87" rx="17" ry="4.5" fill="#c2824b"/></g></svg>

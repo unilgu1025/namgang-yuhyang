@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><defs>
+<radialGradient id="disk" cx="50%" cy="38%" r="62%"><stop offset="0" stop-color="#1c3745"/><stop offset="1" stop-color="#040506"/></radialGradient>
+<radialGradient id="halo"><stop offset=".6" stop-color="#fcc441" stop-opacity=".32"/><stop offset="1" stop-color="#fcc441" stop-opacity="0"/></radialGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf6bf"/><stop offset=".5" stop-color="#fcc441"/><stop offset="1" stop-color="#c2824b"/></linearGradient>
+<filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<circle cx="64" cy="64" r="63" fill="url(#halo)"/>
+<circle cx="64" cy="64" r="45" fill="url(#disk)" stroke="#c2824b" stroke-width="4"/>
+<circle cx="64" cy="64" r="39" fill="none" stroke="#fcc441" stroke-opacity=".35" stroke-width="1.5"/><g filter="url(#glow)">
+<rect x="24" y="66" width="80" height="7" rx="3.5" fill="url(#gold)"/>
+<path d="M8 69.5 L28 58 L28 81 Z" fill="#fdf6bf"/><path d="M120 69.5 L100 58 L100 81 Z" fill="#fdf6bf"/>
+<g fill="url(#gold)" stroke="#c2824b" stroke-width="1.2">
+<path d="M40 50 h11 l2 14 h-15 z"/><path d="M58.5 45 h11 l2.5 19 h-16 z"/><path d="M77 50 h11 l2 14 h-15 z"/></g>
+<g fill="#fdf6bf"><circle cx="45.5" cy="58" r="2.2"/><circle cx="64" cy="55" r="2.8"/><circle cx="82.5" cy="58" r="2.2"/></g></g></svg>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#040506" />
+  <title>남강유향</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Gowun+Dodum&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/tokens.css" />
+  <style>
+    body { overflow: hidden; }
+    .hub {
+      position: relative;
+      height: 100dvh;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    /* 세로 화면에서 로고가 잘리지 않도록: 흐린 cover 배경 + 원본 contain */
+    .hub::before {
+      content: '';
+      position: absolute;
+      inset: -40px;
+      background: url(/assets/title.jpg) center / cover;
+      filter: blur(24px) brightness(.45);
+    }
+    .keyart {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .menu {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: calc(24px + env(safe-area-inset-bottom));
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px 16px;
+      padding: 0 16px;
+    }
+    .menu .btn { min-width: 240px; }
+    .menu small { font-weight: 400; font-size: 14px; opacity: .8; }
+    .credit {
+      position: absolute;
+      top: calc(12px + env(safe-area-inset-top));
+      right: 16px;
+      margin: 0;
+      font-size: 13px;
+      color: rgb(224 205 177 / .6);
+    }
+    @media (max-aspect-ratio: 4/3) {
+      /* 로고(그림 가로 44%)가 화면 폭 안에 들어오는 높이로 자르고, 위아래는 흐린 배경에 녹인다 */
+      .keyart {
+        top: 42%;
+        height: min(118vw, 70dvh);
+        transform: translateY(-50%);
+        object-position: 49% 50%;
+        -webkit-mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent);
+        mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent);
+      }
+      .menu { flex-direction: column; align-items: center; }
+      .menu .btn { width: min(320px, 100%); }
+    }
+  </style>
+</head>
+<body>
+  <main class="hub">
+    <h1 class="sr-only">남강유향</h1>
+    <img class="keyart" src="/assets/title.jpg" width="1600" height="900" fetchpriority="high" alt="비 내리는 밤, 금빛 유등이 켜진 남강과 그 위로 적힌 남강유향 글씨" />
+    <p class="credit">창작 판타지 · 실제 역사·제품 효능과 무관</p>
+    <nav class="menu" aria-label="게임 선택">
+      <a class="btn primary" href="swipe.html">물결을 가르는 향등 <small>스와이프</small></a>
+      <a class="btn primary" href="defense.html">안부를 띄우는 밤 <small>랜덤 디펜스</small></a>
+    </nav>
+  </main>
+</body>
+</html>

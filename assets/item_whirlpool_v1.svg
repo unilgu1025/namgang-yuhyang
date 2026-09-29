@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><defs>
+<radialGradient id="disk" cx="50%" cy="38%" r="62%"><stop offset="0" stop-color="#1c3745"/><stop offset="1" stop-color="#040506"/></radialGradient>
+<radialGradient id="halo"><stop offset=".6" stop-color="#fcc441" stop-opacity=".32"/><stop offset="1" stop-color="#fcc441" stop-opacity="0"/></radialGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdf6bf"/><stop offset=".5" stop-color="#fcc441"/><stop offset="1" stop-color="#c2824b"/></linearGradient>
+<filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<circle cx="64" cy="64" r="63" fill="url(#halo)"/>
+<circle cx="64" cy="64" r="45" fill="url(#disk)" stroke="#c2824b" stroke-width="4"/>
+<circle cx="64" cy="64" r="39" fill="none" stroke="#fcc441" stroke-opacity=".35" stroke-width="1.5"/><g filter="url(#glow)">
+<path d="M64 64 A4 4 0 0 1 72 64 A8 8 0 0 1 56 64 A12 12 0 0 1 80 64 A16 16 0 0 1 48 64 A20 20 0 0 1 88 64 A24 24 0 0 1 40 64" fill="none" stroke="#5ca1bc" stroke-width="5" stroke-linecap="round"/>
+<path d="M34 58 L40 70 L46 58 Z" fill="#5ca1bc"/>
+<circle cx="66" cy="64" r="3.5" fill="#fcc441"/></g></svg>
