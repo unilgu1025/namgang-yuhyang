@@ -21,8 +21,6 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let MAP: MapDef = MAPS.s;
 let PATH = MAP.path;
 let SLOTS = MAP.slots;
-/** 적이 성까지 걸리는 시간을 맵과 상관없이 같게: S자 물길 길이를 기준으로 속도를 늘린다 */
-const S_LEN = new Phaser.Curves.Spline(MAPS.s.path).getLength();
 const SLOT_R = 48, DROP_R = 80;
 
 type Unit = {
@@ -370,7 +368,7 @@ class Defense extends Phaser.Scene {
           e.slow = Math.min(e.slow, 1 - unitSlow(c, this.bonus));
         }
       }
-      e.dist += ENEMY[e.type].speed * (this.pathLen / S_LEN) * e.slow * dt;
+      e.dist += ENEMY[e.type].speed * e.slow * dt; // 물길이 길수록 적이 오래 머문다
       const t = Math.min(1, e.dist / this.pathLen);
       const p = this.path.getPointAt(t);
       if (Math.abs(p.x - e.sprite.x) > 0.5) e.sprite.setFlipX(p.x < e.sprite.x);

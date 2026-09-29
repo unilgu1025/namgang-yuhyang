@@ -7,8 +7,8 @@ for (const [id, m] of Object.entries(MAPS)) {
   for (const s of m.slots) {
     assert.ok(distToPath(s, pts) >= SLOT_PATH_GAP - 1, `${id}: 자리 (${s.x},${s.y})가 물길과 겹침`);
     assert.ok(s.x >= 60 && s.x <= 660 && s.y >= 180 && s.y <= 960, `${id}: 자리 (${s.x},${s.y})가 전장 밖`);
-    // 최대 사거리(수호등 250) 안에 물길이 들어와야 쓸모 있는 자리
-    assert.ok(distToPath(s, pts) < 250, `${id}: 자리 (${s.x},${s.y})가 물길에서 너무 멂`);
+    // 사거리가 짧은 안부등(200)을 놓아도 물길에 닿아야 쓸모 있는 자리
+    assert.ok(distToPath(s, pts) < 200, `${id}: 자리 (${s.x},${s.y})가 물길에서 너무 멂`);
   }
   for (const a of m.slots) for (const b of m.slots) {
     if (a !== b) assert.ok(Math.hypot(a.x - b.x, a.y - b.y) >= SLOT_SPACING - 1, `${id}: 자리끼리 겹침`);

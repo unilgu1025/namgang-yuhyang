@@ -65,7 +65,11 @@ function spiral(): number[] {
   return out;
 }
 
-const S_PATH = [400, 250, 320, 330, 220, 440, 300, 560, 480, 640, 520, 760, 400, 850, 250, 920, 330, 1000];
+// 강을 좌우로 크게 여섯 번 오가는 뱀 모양. 굽이마다 양쪽 강가 유등 자리(x 92 / 628)에 번갈아 붙는다
+const S_PATH = [
+  400, 170, 520, 250, 360, 320, 200, 400, 330, 470, 525, 545,
+  400, 620, 205, 690, 330, 770, 525, 840, 380, 895, 215, 935, 330, 1000,
+];
 const SPIRAL_PATH = spiral();
 
 export const MAPS: Record<MapId, MapDef> = {
@@ -75,7 +79,7 @@ export const MAPS: Record<MapId, MapDef> = {
     path: S_PATH,
     slots: [330, 480, 630, 780, 930].flatMap((y) => [{ x: 92, y }, { x: 628, y }]),
     hpMul: 1,
-    startLabel: { x: 0, y: -42 },
+    startLabel: { x: -150, y: 8 },
     gateLabel: { x: 96, y: -8 },
   },
   spiral: {
@@ -83,8 +87,8 @@ export const MAPS: Record<MapId, MapDef> = {
     desc: '달팽이처럼 1.5바퀴 돌며 가운데 성으로 말려 드는 물길. 고리 사이 유등은 여러 바퀴를 한꺼번에 노린다.',
     path: SPIRAL_PATH,
     slots: autoSlots(SPIRAL_PATH),
-    // 고리 사이 유등이 여러 바퀴를 한꺼번에 때려서 S자보다 훨씬 유리하다(보정 전 봇 3전 3승)
-    hpMul: 1.25,
+    // 고리 사이 유등이 여러 바퀴를 한꺼번에 때려서 S자보다 조금 유리하다
+    hpMul: 1.1,
     startLabel: { x: -130, y: 6 },
     gateLabel: { x: 0, y: 46 },
   },
