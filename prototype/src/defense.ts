@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import {
-  BOSS_SNUFF, CARDS, CRIT, ENEMY, GUARD_CHANCE, INCENSE, LEVEL_MUL, MAX_LEVEL, MAX_SLOW, START, UNIT, WAVES,
+  BOSS_SNUFF, CARDS, CRIT, LUCKY_LV2_CHANCE, ENEMY, GUARD_CHANCE, INCENSE, LEVEL_MUL, MAX_LEVEL, MAX_SLOW, START, UNIT, WAVES,
   type Bonus, type CardId, type EnemyType, type UnitType,
 } from './defense-data.ts';
 import { bindSound, buzz, loadSounds, pauseSound, playEnding, sfx, startBgm, toggleSound } from './sound.ts';
@@ -72,6 +72,7 @@ class Defense extends Phaser.Scene {
   private queue: EnemyType[] = [];
   private state: 'play' | 'cards' | 'cut' | 'over' = 'play';
   private wave = 0;
+  private seedTimer = 0;
   private spawnTimer = 0;
   private seeds = 0;
   private rollCost = 0;
@@ -96,7 +97,7 @@ class Defense extends Phaser.Scene {
   create() {
     this.makeAnims();
     Object.assign(this, {
-      slots: SLOTS.map(() => null), enemies: [], orbs: [], queue: [], state: 'play', wave: 0, spawnTimer: 0,
+      slots: SLOTS.map(() => null), enemies: [], orbs: [], queue: [], state: 'play', wave: 0, spawnTimer: 0, seedTimer: 0,
       seeds: START.seeds, rollCost: START.rollCost, integrity: START.integrity, incense: 0,
       bonus: { guardDmg: 1, comfortSlow: 0, comfortRange: 1, incenseGain: 1 },
     });
@@ -162,7 +163,9 @@ class Defense extends Phaser.Scene {
     if (!empty.length) return;
     const slot = empty[Math.floor(Math.random() * empty.length)];
     const type: UnitType = Math.random() < GUARD_CHANCE ? 'guard' : 'comfort';
-    const u = this.placeUnit(type, 1, slot);
+    const lucky = !free && Math.random() < LUCKY_LV2_CHANCE;
+    const u = this.placeUnit(type, lucky ? 2 : 1, slot);
+    if (lucky) ui.toast(`행운! ${UNIT[type].name} Lv2가 나왔습니다`);
     const { x, y } = SLOTS[slot];
     if (!free) sfx('dice', { volume: 0.7 });
     const fx = this.add.sprite(x, y, 'dice1').setScale(0.55).setDepth(1600).play('dice');
@@ -360,6 +363,14 @@ class Defense extends Phaser.Scene {
     if (this.state !== 'play') return;
     const fast = import.meta.env.DEV ? ((window as { __speed?: number }).__speed ?? 1) : 1;
     const dt = (Math.min(deltaMs, 50) * fast) / 1000;
+
+    // 1초마다 등불씨가 조금씩 쌓인다 (주사위 비용)
+    this.seedTimer += dt;
+    if (this.seedTimer >= 1) {
+      this.seedTimer -= 1;
+      this.seeds += START.seedsPerSec;
+      ui.update(this);
+    }
 
     this.spawnTimer -= dt;
     if (this.queue.length && this.spawnTimer <= 0) {

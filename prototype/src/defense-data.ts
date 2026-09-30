@@ -8,6 +8,8 @@ export const MAX_LEVEL = 4;
 /** 합성(유등 2개 → 1개)이 확실히 이득이 되도록 2보다 크게 */
 export const LEVEL_MUL = 2.3;
 export const GUARD_CHANCE = 0.65;
+/** 주사위로 소환할 때 가끔 Lv2가 나온다 */
+export const LUCKY_LV2_CHANCE = 0.15;
 
 export const UNIT = {
   guard: { name: '수호등', role: '사거리 안에서 성에 가장 가까운 적에게 빛 구슬을 쏩니다.', damage: 12, every: 0.8, range: 250, slow: 0, slowPerLevel: 0 },
@@ -24,11 +26,11 @@ export const ENEMY: Record<EnemyType, { hp: number; speed: number; leak: number;
 };
 
 /** 주사위는 자주 굴릴 수 있게: 비용 증가 폭을 작게, 처치 보상은 넉넉히 */
-export const START = { seeds: 50, integrity: 10, freeUnits: 3, rollCost: 8, rollStep: 3, waveBonus: 30 };
+export const START = { seeds: 50, integrity: 10, freeUnits: 3, rollCost: 8, rollStep: 3, waveBonus: 30, seedsPerSec: 1 };
 
 /** 향 피우기(필살기): 일반 적은 power로 모두 쓰러지고, 대장선은 power + 최대 체력 × bossRatio */
 /** 대장선 필살기 '불 끄기': every초마다 무작위 유등 하나를 duration초 동안 끈다. 같은 유등을 합치면 다시 켜진다. */
-export const BOSS_SNUFF = { every: 5, duration: 4 };
+export const BOSS_SNUFF = { every: 7, duration: 4 };
 
 export const INCENSE = { power: 999, bossRatio: 0.3 };
 
