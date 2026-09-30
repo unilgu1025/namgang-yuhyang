@@ -340,7 +340,12 @@ class Defense extends Phaser.Scene {
     const hp = def.hp * WAVES[this.wave].hpMul * MAP.hpMul;
     const anim = `${type}-move`;
     const sprite = this.add.sprite(PATH[0], PATH[1], type === 'mist' ? 'mist1' : 'boat1').play(anim).setScale(def.scale * 0.7);
-    if (type === 'boss') sprite.setTint(0xc88a9a);
+    if (type === 'boss') {
+      sprite.setTint(0xc88a9a);
+      // 어두운 강 위에서도 보이게 붉은 금빛 잔광 (WebGL에서만, 캔버스면 생략)
+      const glow = sprite.preFX?.addGlow(0xffb070, 4, 0, false, 0.1, 12);
+      if (glow && !reducedMotion) this.tweens.add({ targets: glow, outerStrength: 8, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
+    }
     const hpText = this.add.text(0, 0, '', {
       fontFamily: 'Gowun Dodum', fontSize: type === 'boss' ? '26px' : '22px', color: '#fdf6bf', stroke: '#040506', strokeThickness: 4,
     }).setOrigin(0.5, 1);
