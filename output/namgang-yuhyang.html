@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#070d12">
+  <meta name="description" content="남강유향 게임 프로젝트 — 빛으로 지키고, 물결을 가르는 두 가지 플레이">
+  <title>남강유향 — 안부를 띄우는 밤</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <style>
+    :root{color-scheme:dark;--ink:#070d12;--paper:#eee5d2;--muted:#a8ada9;--gold:#f5c65b;--teal:#69d6c6;--red:#ff806e;--line:#ffffff22}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--ink);color:var(--paper);font-family:Pretendard,"Malgun Gothic",sans-serif}
+    #deck{position:relative;width:100vw;height:100dvh;overflow:hidden;background:radial-gradient(ellipse at 70% 48%,#15232a 0,#0a1117 55%,#070d12 100%)}
+    #world{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+    .grain{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.09;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E")}
+    .slide{position:absolute;inset:0;display:none;z-index:1;padding:clamp(28px,6vw,96px) clamp(24px,8vw,132px);align-items:flex-start;justify-content:center;flex-direction:column;overflow:hidden}
+    .slide.active{display:flex;animation:reveal .65s cubic-bezier(.18,.72,.2,1) both}
+    @keyframes reveal{from{opacity:0;transform:translateY(16px) scale(.99)}to{opacity:1;transform:none}}
+    .eyebrow{font-size:clamp(11px,1.1vw,15px);letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:700;margin:0 0 20px}
+    h1,h2,p{margin-top:0}h1{font-size:clamp(54px,9.3vw,140px);line-height:.98;letter-spacing:-.075em;font-weight:900;margin-bottom:24px;max-width:980px}
+    h2{font-size:clamp(42px,6.4vw,92px);line-height:1.03;letter-spacing:-.065em;font-weight:850;margin:0 0 24px;max-width:920px}
+    .outline{display:block;color:transparent;-webkit-text-stroke:1px #eee5d278;margin-top:-.08em;transform:translateX(.04em)}
+    .lead{font-size:clamp(17px,2vw,25px);line-height:1.65;color:#d1d2ca;max-width:670px;margin:0}
+    .small{font-size:clamp(12px,1vw,14px);line-height:1.6;color:var(--muted)}
+    .hero{padding-left:12vw}.hero .lead{max-width:550px}.hero .credits{position:absolute;left:12vw;bottom:8vh;font-size:13px;color:#c5b997;letter-spacing:.04em}
+    .hero .seal{position:absolute;right:13vw;top:15vh;width:clamp(110px,16vw,230px);aspect-ratio:1;border:1px solid #f5c65b55;border-radius:50%;display:grid;place-items:center;color:var(--gold);font-size:clamp(12px,1.2vw,16px);letter-spacing:.25em;transform:rotate(-12deg);box-shadow:0 0 90px #f5c65b12,inset 0 0 45px #f5c65b0c}
+    .split{display:grid;grid-template-columns:minmax(290px,.86fr) 1.14fr;gap:5vw;align-items:center;width:100%}
+    .mode-list{display:grid;gap:14px;margin-top:30px}.mode{border-top:1px solid var(--line);padding:16px 0;display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start}.mode b{color:var(--gold);font:700 13px/1.6 ui-monospace,monospace;letter-spacing:.08em}.mode strong{font-size:19px}.mode span{display:block;color:var(--muted);font-size:14px;line-height:1.55;margin-top:5px}
+    .tag{display:inline-flex;align-items:center;gap:8px;border:1px solid #ffffff25;border-radius:99px;padding:9px 13px;color:#e5ddca;font-size:13px;margin:5px 5px 0 0;background:#ffffff08}.tag i{width:6px;height:6px;background:var(--teal);border-radius:50%;box-shadow:0 0 12px var(--teal)}
+    .side-title{font-size:clamp(36px,5vw,70px)}.metric-row{display:flex;gap:clamp(20px,5vw,70px);margin-top:26px}.metric{border-left:1px solid var(--gold);padding-left:15px}.metric strong{font-size:clamp(27px,3.7vw,52px);letter-spacing:-.04em}.metric span{display:block;color:var(--muted);font-size:13px;margin-top:3px}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;width:min(820px,100%);margin-top:28px;border-top:1px solid var(--line)}.step{padding:18px 20px 0 0}.step b{font-size:12px;color:var(--gold);letter-spacing:.14em}.step strong{display:block;font-size:18px;margin:10px 0 6px}.step p{font-size:14px;line-height:1.55;color:var(--muted);margin:0;max-width:230px}
+    .closing{align-items:center;text-align:center}.closing h2{max-width:900px}.closing .lead{max-width:700px}.closing .actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:30px}.button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 20px;border-radius:4px;text-decoration:none;color:#111;background:var(--gold);font-weight:800;font-size:14px;transition:transform .2s,filter .2s}.button:hover{transform:translateY(-2px);filter:brightness(1.08)}.button.secondary{background:#ffffff0a;color:var(--paper);border:1px solid #ffffff40}
+    .note{position:absolute;right:8vw;bottom:8vh;max-width:250px;text-align:right;color:#b7b8b1;font-size:12px;line-height:1.6}
+    .progress{position:fixed;z-index:10;left:50%;bottom:25px;transform:translateX(-50%);display:flex;gap:9px;align-items:center;padding:10px 14px;border:1px solid #ffffff16;border-radius:99px;background:#070d12aa;backdrop-filter:blur(12px)}.dot{border:0;width:7px;height:7px;border-radius:99px;padding:0;background:#78808066;cursor:pointer;transition:width .28s,background .28s}.dot.active{width:24px;background:var(--gold)}.counter{font:11px ui-monospace,monospace;color:#d9d3c2;margin-left:5px;min-width:35px}.hint{position:fixed;right:24px;bottom:29px;z-index:10;font-size:11px;color:#8d9694;letter-spacing:.05em}.shake{animation:shake .24s linear}@keyframes shake{0%,100%{transform:translate(0)}25%{transform:translate(-8px,4px)}50%{transform:translate(7px,-5px)}75%{transform:translate(-4px,2px)}}
+    @media(max-width:760px){.slide{padding:32px 25px 72px}.hero{padding-left:8vw}.hero .credits{left:8vw;bottom:8vh}.hero .seal{right:8vw;top:13vh;width:90px}.split{grid-template-columns:1fr;gap:20px}.split .visual-space{height:16vh;min-height:105px}.mode-list{margin-top:15px;gap:3px}.mode{padding:10px 0}.mode strong{font-size:16px}.mode span{font-size:12px}.metric-row{margin-top:16px}.metric strong{font-size:32px}.steps{gap:12px}.step{padding-right:4px}.step strong{font-size:14px}.step p{font-size:12px}.note{position:static;text-align:left;margin-top:16px;max-width:none}.hint{display:none}.closing .actions{margin-top:20px}.eyebrow{margin-bottom:13px}h2{margin-bottom:16px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+<main id="deck" aria-label="남강유향 게임 프로젝트 발표자료">
+  <canvas id="world" aria-hidden="true"></canvas><div class="grain"></div>
+  <section class="slide hero" data-scene="river" aria-label="표지">
+    <p class="eyebrow">A LIGHT SENT ACROSS THE RIVER</p>
+    <h1>남강의<br>불빛<span class="outline">안부를 띄우는 밤</span></h1>
+    <p class="lead">빛으로 지키고, 물결을 가르며<br>안부를 강 위에 띄우는 작은 게임.</p>
+    <div class="seal">남강<br>유향</div>
+    <div class="credits">NAMGANG YUHYANG · INTERACTIVE GAME PROJECT</div>
+  </section>
+  <section class="slide" data-scene="duo" aria-label="한 세계, 두 가지 플레이">
+    <div class="split">
+      <div><p class="eyebrow">ONE RIVER · TWO WAYS TO PLAY</p><h2 class="side-title">한 세계,<br>두 가지 물결</h2><p class="lead">같은 밤의 강을 서로 다른 리듬으로 지킨다. 손끝의 조준, 주사위의 선택.</p>
+        <div class="mode-list"><div class="mode"><b>01</b><div><strong>물결을 가르는 향등</strong><span>스와이프 조준 · 구슬 일괄 발사 · 물결 반사 퍼즐</span></div></div><div class="mode"><b>02</b><div><strong>안부를 띄우는 밤</strong><span>주사위 소환 · 등불 합성 · 경로 디펜스</span></div></div></div>
+      </div><div class="visual-space" aria-hidden="true"></div>
+    </div>
+  </section>
+  <section class="slide" data-scene="swipe" aria-label="스와이프 벽돌깨기">
+    <div class="split"><div><p class="eyebrow">MODE 01 / AIM · RELEASE · RETURN</p><h2>한 번의 선,<br>연쇄하는 빛</h2><p class="lead">끌어 조준하고 놓으면 구슬이 차례로 쏟아진다. 벽과 조각에 튕긴 빛이 돌아오는 동안, 다음 턴의 발사점도 달라진다.</p><div class="metric-row"><div class="metric"><strong>7 × 10</strong><span>플레이 필드</span></div><div class="metric"><strong>2</strong><span>플레이 스테이지</span></div></div><div class="steps"><div class="step"><b>01</b><strong>조준</strong><p>첫 충돌과 반사 경로를 미리 읽는다.</p></div><div class="step"><b>02</b><strong>연속 발사</strong><p>구슬마다 부딪힐 때마다 조각 HP를 깎는다.</p></div><div class="step"><b>03</b><strong>변수 획득</strong><p>물결 매듭과 향 아이템으로 궤적을 바꾼다.</p></div></div></div><div class="visual-space" aria-hidden="true"></div></div>
+  </section>
+  <section class="slide" data-scene="defense" aria-label="랜덤 디펜스">
+    <div class="split"><div><p class="eyebrow">MODE 02 / ROLL · MERGE · DEFEND</p><h2>주사위가 고른<br>등불의 자리</h2><p class="lead">등불씨를 모아 주사위를 굴리고, 다른 역할의 등불을 배치한다. 같은 등불은 합성해 키우고, 향의 광역 점등은 직접 발동한다.</p><div class="metric-row"><div class="metric"><strong>2</strong><span>방어 웨이브</span></div><div class="metric"><strong>10</strong><span>성의 불빛</span></div></div><div class="steps"><div class="step"><b>01</b><strong>소환·배치</strong><p>랜덤 등불을 길가 슬롯에 놓는다.</p></div><div class="step"><b>02</b><strong>합성·방어</strong><p>수호등은 공격, 안부등은 둔화와 파동 피해.</p></div><div class="step"><b>03</b><strong>향 피우기</strong><p>게이지가 차면 화면 전체를 밝히는 공격.</p></div></div></div><div class="visual-space" aria-hidden="true"></div></div>
+  </section>
+  <section class="slide" data-scene="values" aria-label="만드는 방식">
+    <div><p class="eyebrow">BUILT TO BE PLAYED, NOT TO INTERRUPT</p><h2>게임의 결말은<br>게임 안에서 완성된다</h2><p class="lead">남강유등의 ‘안부를 전하는 빛’에서 출발한 창작 판타지. 제품 구매는 플레이의 승패·진행·보상과 연결되지 않는다.</p><div class="steps" style="margin-top:36px"><div class="step"><b>01 / PLAY</b><strong>브라우저에서 바로</strong><p>설치·로그인 없이 시작하는 모바일 우선 웹게임.</p></div><div class="step"><b>02 / STORY</b><strong>역사와 창작을 구분</strong><p>등지기·어둠의 군세·향의 규칙은 창작 설정으로 다룬다.</p></div><div class="step"><b>03 / CHOICE</b><strong>선택형 마켓 연결</strong><p>게임을 마친 뒤 관심이 있으면 이동. 구매 없이 결말까지 온전히 경험.</p></div></div><p class="small" style="margin-top:24px">Phaser 3 · TypeScript · Vite · GitHub Pages</p></div>
+  </section>
+  <section class="slide closing" data-scene="ending" aria-label="플레이 및 배포 링크">
+    <p class="eyebrow">THE LIGHT IS IN YOUR HANDS</p><h2>당신의 안부를<br>강 위에 띄워보세요.</h2><p class="lead">두 개의 프로토타입을 지금 플레이할 수 있습니다.<br>모바일에서는 세로 화면을 권장합니다.</p>
+    <div class="actions"><a class="button" href="https://unilgu1025.github.io/namgang-yuhyang/swipe.html">스와이프 플레이 ↗</a><a class="button secondary" href="https://unilgu1025.github.io/namgang-yuhyang/defense.html">디펜스 플레이 ↗</a><a class="button secondary" href="https://github.com/unilgu1025/namgang-yuhyang">GitHub 저장소 ↗</a></div>
+    <p class="small" style="margin-top:24px">창작 판타지 · 실제 역사·향 제품 효능에 관한 주장이 아닙니다.</p>
+  </section>
+  <div class="progress" id="progress" aria-label="슬라이드 진행"></div><div class="hint">← → / SPACE / CLICK</div>
+</main>
+<script>
+(()=>{
+  const slides=[...document.querySelectorAll('.slide')], canvas=document.querySelector('#world'), ctx=canvas.getContext('2d'), progress=document.querySelector('#progress'), deck=document.querySelector('#deck');
+  let current=-1,w=0,h=0,dpr=1,t=0,impact=0,balls=[],embers=[];
+  const resize=()=>{dpr=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;canvas.width=w*dpr;canvas.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)};
+  addEventListener('resize',resize);resize();
+  const dots=slides.map((_,i)=>{const b=document.createElement('button');b.className='dot';b.setAttribute('aria-label',`슬라이드 ${i+1}`);b.onclick=()=>go(i);progress.append(b);return b});
+  function go(i){if(i<0||i>=slides.length||i===current)return;if(current>=0)slides[current].classList.remove('active');current=i;slides[i].classList.add('active');dots.forEach((d,n)=>d.classList.toggle('active',n===i));document.querySelector('.counter')?.remove();let c=document.createElement('span');c.className='counter';c.textContent=`${String(i+1).padStart(2,'0')} / ${String(slides.length).padStart(2,'0')}`;progress.append(c);slides[i].dispatchEvent(new Event('slide-enter'));if(i===2||i===3){impact=0;balls=[]}}
+  addEventListener('keydown',e=>{if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();go(current+1)}if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(current-1)}if(e.key==='Home')go(0);if(e.key==='End')go(slides.length-1)});
+  deck.addEventListener('click',e=>{if(e.target.closest('a,button'))return;go(current+1)});
+  function river(){ctx.fillStyle='rgba(5,12,17,.20)';ctx.fillRect(0,0,w,h);let horizon=h*.64;for(let k=0;k<16;k++){let y=horizon+k*k*h*.0015+Math.sin(t*.45+k)*3;ctx.beginPath();for(let x=0;x<=w;x+=12){let bend=Math.sin(x/w*4+t*.18)*w*.04;let yy=y+bend+Math.sin(x*.018+t*1.1+k)*3; x===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy)}ctx.strokeStyle=`rgba(64,153,155,${.035+k*.003})`;ctx.lineWidth=1;ctx.stroke()}
+    for(let i=0;i<9;i++){let x=(i*.137*w+t*(8+i%3*3))%(w+100)-50;let y=horizon+30+(i*71%(h*.25));let bob=Math.sin(t*1.7+i)*4;ctx.shadowColor='#ffc95f';ctx.shadowBlur=22;ctx.fillStyle='#f5c65b';ctx.beginPath();ctx.ellipse(x,y+bob,5,9,0,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='rgba(255,216,133,.28)';ctx.beginPath();ctx.ellipse(x,y+14+bob,12+(t*8+i)%25,3,0,0,Math.PI*2);ctx.stroke()}}
+  function grid(x,y,c,r,sx,sy){ctx.lineWidth=1;for(let i=0;i<=c;i++){ctx.beginPath();ctx.moveTo(x+i*sx,y);ctx.lineTo(x+i*sx,y+r*sy);ctx.strokeStyle='rgba(139,179,169,.13)';ctx.stroke()}for(let j=0;j<=r;j++){ctx.beginPath();ctx.moveTo(x,y+j*sy);ctx.lineTo(x+c*sx,y+j*sy);ctx.strokeStyle='rgba(139,179,169,.13)';ctx.stroke()}}
+  function swipe(){ctx.fillStyle='rgba(5,12,17,.22)';ctx.fillRect(0,0,w,h);let mobile=w<760,ox=mobile?w*.28:w*.57,oy=mobile?h*.1:h*.14,cols=7,rows=10,cw=Math.min((w-ox-30)/cols,42),ch=Math.min((h-oy-90)/rows,38);if(mobile){cw=Math.min(w*.078,31);ch=Math.min(h*.043,33)}grid(ox,oy,cols,rows,cw,ch);for(let r=0;r<6;r++)for(let c=0;c<cols;c++){let k=(r*17+c*7)%11;if(k<5){let x=ox+c*cw+3,y=oy+r*ch+3,hh=3+(r+c)%7;ctx.fillStyle=`rgba(36,91,103,${.35+hh*.045})`;ctx.fillRect(x,y,cw-6,ch-6);ctx.strokeStyle='rgba(103,214,198,.34)';ctx.strokeRect(x,y,cw-6,ch-6);ctx.fillStyle='#f0d995';ctx.font='11px ui-monospace';ctx.fillText(hh,x+cw*.38,y+ch*.65)}else if(k===7){ctx.beginPath();ctx.arc(ox+c*cw+cw/2,oy+r*ch+ch/2,7,0,7);ctx.strokeStyle='#66cbbb88';ctx.stroke()}}
+    let launchX=ox+cols*cw*.52, launchY=oy+rows*ch+35;ctx.beginPath();ctx.moveTo(ox,launchY);ctx.lineTo(ox+cols*cw,launchY);ctx.strokeStyle='#f5c65b77';ctx.setLineDash([5,6]);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(launchX,launchY,9,0,7);ctx.fillStyle='#f5c65b';ctx.shadowColor='#f5c65b';ctx.shadowBlur=14;ctx.fill();ctx.shadowBlur=0;
+    if(t%3.3<.06){for(let i=0;i<8;i++)balls.push({x:launchX,y:launchY,vx:(i-3.5)*.55,vy:-3.6-(i%3)*.35,life:0})}balls=balls.filter(b=>b.life<180);for(const b of balls){b.life++;b.x+=b.vx;b.y+=b.vy;if(b.x<ox||b.x>ox+cols*cw)b.vx*=-1;if(b.y<oy||b.y>launchY)b.vy*=-1;ctx.beginPath();ctx.arc(b.x,b.y,3.2,0,7);ctx.fillStyle='#fff0ba';ctx.shadowColor='#ffcc66';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0}}
+  function defense(){ctx.fillStyle='rgba(5,12,17,.2)';ctx.fillRect(0,0,w,h);let mobile=w<760;let x0=mobile?w*.18:w*.54,y0=mobile?h*.19:h*.16,ww=mobile?w*.64:w*.36,hh=mobile?h*.54:h*.62;ctx.strokeStyle='rgba(91,183,173,.25)';ctx.lineWidth=mobile?22:28;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x0+ww,y0+hh*.08);ctx.bezierCurveTo(x0+ww*.1,y0+hh*.18,x0+ww*.9,y0+hh*.36,x0+ww*.12,y0+hh*.54);ctx.bezierCurveTo(x0+ww*.03,y0+hh*.73,x0+ww*.62,y0+hh*.82,x0+ww*.43,y0+hh);ctx.stroke();ctx.strokeStyle='rgba(143,226,206,.3)';ctx.lineWidth=1;ctx.setLineDash([4,8]);ctx.stroke();ctx.setLineDash([]);
+    // Fort and 10 warm windows
+    let fx=x0+ww*.36,fy=y0+hh*.81,fw=ww*.28,fh=hh*.21;ctx.fillStyle='#17272a';ctx.fillRect(fx,fy,fw,fh);ctx.fillStyle='#263c3a';ctx.beginPath();ctx.moveTo(fx-8,fy);ctx.lineTo(fx+fw/2,fy-fh*.55);ctx.lineTo(fx+fw+8,fy);ctx.fill();for(let i=0;i<10;i++){let wx=fx+8+(i%5)*(fw-20)/5,wy=fy+8+Math.floor(i/5)*fh*.38;ctx.fillStyle=`rgba(245,198,91,${.5+.5*Math.sin(t*2+i)})`;ctx.fillRect(wx,wy,5,7)}
+    let units=[{x:x0+ww*.36,y:y0+hh*.26,c:'#f6c75b'},{x:x0+ww*.68,y:y0+hh*.44,c:'#b8e9df'},{x:x0+ww*.29,y:y0+hh*.67,c:'#f6c75b'}];units.forEach((u,i)=>{let r=mobile?13:18;ctx.beginPath();ctx.arc(u.x,u.y,r,0,7);ctx.fillStyle='#0d1c21';ctx.fill();ctx.strokeStyle=u.c;ctx.lineWidth=2;ctx.stroke();ctx.beginPath();ctx.arc(u.x,u.y,r+6+Math.sin(t*2+i)*2,0,7);ctx.strokeStyle=u.c+'66';ctx.lineWidth=1;ctx.stroke();if(i%2===0){let ex=x0+ww*(.8-.12*Math.sin(t+i)),ey=y0+hh*(.25+.21*i);ctx.beginPath();ctx.moveTo(u.x,u.y);ctx.lineTo(ex,ey);ctx.strokeStyle='#f6c75b30';ctx.stroke()}});
+    // A shadow advances down the river toward the lit fortress
+    let p=(t*.075)%1,ex=x0+ww*(1-p),ey=y0+hh*(.1+.72*p)+Math.sin(t*2)*4;ctx.beginPath();ctx.ellipse(ex,ey,8,13,0,0,7);ctx.fillStyle='#090d13';ctx.fill();ctx.strokeStyle='#7186a066';ctx.stroke();ctx.beginPath();ctx.arc(ex,ey-3,2,0,7);ctx.fillStyle='#b8e9df';ctx.fill();
+    // Incense burst rings
+    let pulse=(t*.34)%1;ctx.beginPath();ctx.arc(fx+fw/2,fy-fh*.25,pulse*(mobile?130:210),0,7);ctx.strokeStyle=`rgba(245,198,91,${(1-pulse)*.65})`;ctx.lineWidth=2;ctx.stroke();if(pulse<.08)impact=.22;
+  }
+  function draw(){t+=.016;ctx.clearRect(0,0,w,h);let scene=slides[current]?.dataset.scene;if(scene==='river'||scene==='ending')river();else if(scene==='swipe')swipe();else if(scene==='defense')defense();else if(scene==='duo'){river();let x=w*.69,y=h*.49;ctx.strokeStyle='#69d6c633';ctx.beginPath();ctx.arc(x,y,Math.min(w,h)*.19+Math.sin(t)*4,0,7);ctx.stroke();ctx.beginPath();ctx.arc(x,y,Math.min(w,h)*.28,0,7);ctx.stroke();ctx.fillStyle='#f5c65b';ctx.shadowBlur=30;ctx.shadowColor='#f5c65b';ctx.beginPath();ctx.arc(x,y,7,0,7);ctx.fill();ctx.shadowBlur=0}else if(scene==='values'){river()}requestAnimationFrame(draw)}
+  go(0);requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
