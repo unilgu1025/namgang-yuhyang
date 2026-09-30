@@ -1,4 +1,5 @@
 // 디펜스게임.md §4~7 수치. 실제 플레이로 조절한다.
+// 향 게이지: 적 수를 줄인 뒤에도 물결마다 한 번은 찰 수 있게 처치당 8% (약 13마리)
 
 export type UnitType = 'guard' | 'comfort';
 export type EnemyType = 'mist' | 'boat' | 'boss';
@@ -17,8 +18,8 @@ export const MAX_SLOW = 0.7;
 export const CRIT = { chance: 0.15, mul: 2 };
 
 export const ENEMY: Record<EnemyType, { hp: number; speed: number; leak: number; seeds: number; incense: number; scale: number }> = {
-  mist: { hp: 30, speed: 115, leak: 1, seeds: 4, incense: 0.025, scale: 0.62 },
-  boat: { hp: 120, speed: 60, leak: 2, seeds: 9, incense: 0.025, scale: 0.62 },
+  mist: { hp: 30, speed: 115, leak: 1, seeds: 4, incense: 0.08, scale: 0.62 },
+  boat: { hp: 120, speed: 60, leak: 2, seeds: 9, incense: 0.08, scale: 0.62 },
   boss: { hp: 1400, speed: 42, leak: 6, seeds: 40, incense: 0.2, scale: 1 },
 };
 
