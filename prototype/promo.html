@@ -169,8 +169,16 @@
       submit.disabled = true;
       submit.textContent = '보내는 중…';
       try {
-        // Apps Script는 CORS 응답을 주지 않아 no-cors로 보낸다 (응답 본문은 읽지 못함)
-        await fetch(ENTRY_URL, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ phone: phone.value, game: from, agree: 'Y' }) });
+        // Apps Script 응답(ok·duplicate·invalid)을 읽어 실제로 저장됐을 때만 완료를 띄운다
+        const res = await fetch(ENTRY_URL, { method: 'POST', body: new URLSearchParams({ phone: phone.value, game: from, agree: 'Y' }) });
+        const result = (await res.text()).trim();
+        if (result === 'duplicate') {
+          say('이미 응모된 번호입니다. 1인 1회만 응모할 수 있어요.', 'err');
+          submit.disabled = false;
+          submit.textContent = '응모하기';
+          return;
+        }
+        if (result !== 'ok') throw new Error(result);
         $('form').hidden = true;
         $('done').hidden = false;
         $('done').focus();
