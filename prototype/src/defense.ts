@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import {
-  BOSS_SNUFF, CARDS, CRIT, LUCKY_LV2_CHANCE, ENEMY, GUARD_CHANCE, INCENSE, LEVEL_MUL, MAX_LEVEL, MAX_SLOW, START, UNIT, WAVES,
+  BOSS_SNUFF, CARDS, CRIT, FAST_FORWARD, LUCKY_LV2_CHANCE, ENEMY, GUARD_CHANCE, INCENSE, LEVEL_MUL, MAX_LEVEL, MAX_SLOW, START, UNIT, WAVES,
   type Bonus, type CardId, type EnemyType, type UnitType,
 } from './defense-data.ts';
 import { bindSound, buzz, loadSounds, pauseSound, playEnding, sfx, startBgm, toggleSound } from './sound.ts';
@@ -73,6 +73,7 @@ class Defense extends Phaser.Scene {
   private state: 'play' | 'cards' | 'cut' | 'over' = 'play';
   private wave = 0;
   private seedTimer = 0;
+  private waveTime = 0;
   private spawnTimer = 0;
   private seeds = 0;
   private rollCost = 0;
@@ -335,6 +336,7 @@ class Defense extends Phaser.Scene {
 
   private startWave(i: number) {
     this.wave = i;
+    this.waveTime = 0;
     this.queue = [...WAVES[i].spawns];
     this.spawnTimer = 1.6;
     this.state = 'play';
@@ -362,7 +364,14 @@ class Defense extends Phaser.Scene {
   update(_: number, deltaMs: number) {
     if (this.state !== 'play') return;
     const fast = import.meta.env.DEV ? ((window as { __speed?: number }).__speed ?? 1) : 1;
-    const dt = (Math.min(deltaMs, 50) * fast) / 1000;
+    let dt = (Math.min(deltaMs, 50) * fast) / 1000;
+    // 물결이 30초를 넘기면 2배속
+    const wasFast = this.waveTime >= FAST_FORWARD.after;
+    this.waveTime += dt;
+    if (this.waveTime >= FAST_FORWARD.after) {
+      if (!wasFast) ui.toast(`${FAST_FORWARD.mul}배속! 어둠이 빨라집니다`);
+      dt *= FAST_FORWARD.mul;
+    }
 
     // 1초마다 등불씨가 조금씩 쌓인다 (주사위 비용)
     this.seedTimer += dt;

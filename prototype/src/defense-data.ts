@@ -10,6 +10,8 @@ export const LEVEL_MUL = 2.3;
 export const GUARD_CHANCE = 0.65;
 /** 주사위로 소환할 때 가끔 Lv2가 나온다 */
 export const LUCKY_LV2_CHANCE = 0.15;
+/** 물결 시작 후 after초가 지나면 전장이 mul배속으로 흐른다 */
+export const FAST_FORWARD = { after: 30, mul: 2 };
 
 export const UNIT = {
   guard: { name: '수호등', role: '사거리 안에서 성에 가장 가까운 적에게 빛 구슬을 쏩니다.', damage: 12, every: 0.8, range: 250, slow: 0, slowPerLevel: 0 },
@@ -22,7 +24,7 @@ export const CRIT = { chance: 0.15, mul: 2 };
 export const ENEMY: Record<EnemyType, { hp: number; speed: number; leak: number; seeds: number; incense: number; scale: number }> = {
   mist: { hp: 40, speed: 230, leak: 1, seeds: 4, incense: 0.08, scale: 0.62 },
   boat: { hp: 230, speed: 90, leak: 2, seeds: 9, incense: 0.08, scale: 0.62 },
-  boss: { hp: 1800, speed: 60, leak: 6, seeds: 40, incense: 0.2, scale: 1 },
+  boss: { hp: 1800, speed: 85, leak: 6, seeds: 40, incense: 0.2, scale: 1 },
 };
 
 /** 주사위는 자주 굴릴 수 있게: 비용 증가 폭을 작게, 처치 보상은 넉넉히 */
