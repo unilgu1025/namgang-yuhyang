@@ -34,7 +34,6 @@ export function renderComic(el: HTMLElement) {
     const img = new Image(1024, 1024);
     img.src = `assets/comic/${i + 1}.webp`;
     img.alt = p.alt;
-    img.decoding = 'async';
     img.onerror = () => fig.classList.add('empty'); // 그림이 오기 전: 번호만 있는 빈 칸
     const cap = document.createElement('figcaption');
     const q = document.createElement('q');
