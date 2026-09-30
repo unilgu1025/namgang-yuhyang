@@ -1,5 +1,6 @@
 // 두 게임이 함께 쓰는 소리·진동. 원본 출처는 asset-register.md.
 import Phaser from 'phaser';
+import { bgm, playBgm, stopBgm } from './bgm.ts';
 
 let game: Phaser.Game;
 export const sound = { on: true };
@@ -22,15 +23,14 @@ export function sfx(key: string, cfg: Phaser.Types.Sound.SoundConfig = {}) {
   game.sound.play(key, { volume: 0.5, ...cfg });
 }
 
-/** 브라우저 자동재생 제한 때문에 첫 조작 뒤에 시작한다. */
+/** 배경음은 bgm.ts가 페이지에 들어오자마자 튼다. 엔딩 뒤 다시 시작할 때 부른다. */
 export function startBgm() {
   game.sound.stopByKey('ending');
-  const bgm = game.sound.get('bgm') ?? game.sound.add('bgm', { loop: true, volume: 0.45 });
-  if (!bgm.isPlaying) bgm.play();
+  playBgm();
 }
 
 export function playEnding() {
-  game.sound.stopByKey('bgm');
+  stopBgm();
   game.sound.play('ending', { volume: 0.9 });
 }
 
@@ -39,10 +39,11 @@ export const buzz = (ms: number) => { if (sound.on) navigator.vibrate?.(ms); };
 export function toggleSound() {
   sound.on = !sound.on;
   game.sound.mute = !sound.on;
+  bgm.muted = !sound.on;
   return sound.on;
 }
 
 export function pauseSound(paused: boolean) {
-  if (paused) game.sound.pauseAll();
-  else game.sound.resumeAll();
+  if (paused) { game.sound.pauseAll(); stopBgm(); }
+  else { game.sound.resumeAll(); if (!game.sound.get('ending')?.isPlaying) playBgm(); }
 }

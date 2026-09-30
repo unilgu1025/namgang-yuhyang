@@ -70,7 +70,7 @@ class Swipe extends Phaser.Scene {
       this.load.image(k, `assets/${k}.png`);
     }
     this.load.image('bg', 'assets/bg.jpg');
-    loadSounds(this, ['bgm', 'ending', 'wall', 'hit', 'break', 'sachet', 'echo', 'bell', 'click']);
+    loadSounds(this, ['ending', 'wall', 'hit', 'break', 'sachet', 'echo', 'bell', 'click']);
   }
 
   create() {

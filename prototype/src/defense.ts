@@ -92,7 +92,7 @@ class Defense extends Phaser.Scene {
     this.load.image('snuff', 'assets/fx_snuff.png');
     d('boat', 3); d('mist', 3); d('orb', 2); d('dice', 3); d('collapse', 3);
     for (const s of ['intact', 'breach', 'ruin']) this.load.image(`end_${s}`, `assets/d/end_${s}.jpg`);
-    loadSounds(this, ['bgm', 'ending', 'dice', 'hit', 'break', 'bell', 'echo', 'click', 'wall', 'sachet']);
+    loadSounds(this, ['ending', 'dice', 'hit', 'break', 'bell', 'echo', 'click', 'wall', 'sachet']);
   }
 
   create() {
@@ -352,6 +352,8 @@ class Defense extends Phaser.Scene {
     if (type === 'boss') {
       sprite.setTint(0xc88a9a);
       // 어두운 강 위에서도 보이게 붉은 금빛 잔광 (WebGL에서만, 캔버스면 생략)
+      // 잔광이 스프라이트 테두리 밖으로 번질 자리를 줘야 네모나게 잘리지 않는다
+      sprite.preFX?.setPadding(32);
       const glow = sprite.preFX?.addGlow(0xffb070, 4, 0, false, 0.1, 12);
       if (glow && !reducedMotion) this.tweens.add({ targets: glow, outerStrength: 8, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.InOut' });
     }
