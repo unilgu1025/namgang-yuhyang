@@ -2,26 +2,29 @@
 // 그림: public/assets/comic/1~4.webp (1024×1024). 아직 없으면 컷 번호만 있는 빈 칸으로 보인다.
 export const PANELS = [
   {
-    alt: '밤, 강 건너 초가집 툇마루에 앉은 소녀가 무릎을 안고 어두운 진주성을 걱정스럽게 바라본다',
+    alt: '밤, 초가집 툇마루에 앉은 소녀가 강 건너 희미한 진주성을 바라보며 오빠를 걱정한다',
     text: '오빠는 강 건너 진주성을 지키러 떠났어요.',
     quote: '오늘 밤도… 소식이 없네.',
   },
   {
-    alt: '성벽 아래 물가에서 젊은 병사가 촛불을 밝힌 실크 유등을 두 손으로 강물에 내려놓는다',
-    text: '오빠는 실크 유등에 작은 불을 밝혀 강물에 띄웠어요.',
+    alt: '성 아래 강가에서 오빠가 꽃가지 무늬 실크 유등 하나를 조심스럽게 물에 띄운다',
+    text: '오빠는 무사하다는 마음을 실크 유등에 담아 띄웠어요.',
     quote: '나는 무사해. 걱정 마.',
   },
   {
-    alt: '강을 건너온 등불을 소녀가 물가에서 두 손으로 받쳐 들고 환하게 웃는다',
-    text: '어둠을 건너온 작은 불빛이 동생에게 닿았어요.',
-    quote: '오빠가… 무사하구나!',
+    alt: '인물 없이, 어두운 남강 수면 위를 유등 하나가 천천히 떠내려간다',
+    text: '작은 불빛 하나가 어두운 남강을 천천히 건너요.',
+    quote: '오빠의 안부를 싣고.',
   },
   {
-    alt: '오늘 밤 수많은 유등이 떠 있는 남강에서 한복 입은 소녀가 등불 하나를 띄우며 미소 짓는다',
-    text: '그날 강을 건넌 안부가 오늘의 남강 유등이 되었어요.',
-    quote: '이제, 당신의 안부를 띄워 볼까요?',
+    alt: '소녀가 가까이 다가온 유등의 빛을 발견하고 안도하며 환하게 미소 짓는다',
+    text: '강을 건너온 불빛이 동생에게 닿았어요.',
+    quote: '오빠가… 무사하구나!',
   },
 ];
+
+/** 4컷 뒤에 한 번 더 건네는 말 (창의 시작 버튼 위, 페이지 맨 아래) */
+export const EPILOGUE = ['그날 강을 건넌 안부가 오늘의 남강 유등이 되었어요.', '이제, 당신의 안부를 띄워 볼까요?'];
 
 export function renderComic(el: HTMLElement) {
   el.replaceChildren(...PANELS.map((p, i) => {
@@ -40,4 +43,8 @@ export function renderComic(el: HTMLElement) {
     fig.append(img, cap);
     return fig;
   }));
+  const epi = document.createElement('p');
+  epi.className = 'epilogue';
+  epi.append(EPILOGUE[0], Object.assign(document.createElement('strong'), { textContent: EPILOGUE[1] }));
+  el.after(epi);
 }

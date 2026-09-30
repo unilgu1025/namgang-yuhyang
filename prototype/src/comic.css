@@ -17,8 +17,10 @@
   font-size: 16px; line-height: 1.45; color: #f3ead8; text-align: center; word-break: keep-all;
 }
 .panel q { display: block; margin-top: 4px; font: 700 17px/1.4 var(--font-title); color: var(--gold); }
-/* 마지막 컷은 대사가 아니라 관람객에게 건네는 말 */
-.panel:nth-child(4) q { quotes: none; color: var(--wick); }
+/* 3컷은 인물 대사가 아니라 내레이션 */
+.panel:nth-child(3) q { quotes: none; font-style: normal; }
+.epilogue { margin: 16px 0 0; text-align: center; font-size: 17px; line-height: 1.5; color: #f3ead8; word-break: keep-all; }
+.epilogue strong { display: block; font: 700 19px/1.4 var(--font-title); color: var(--wick); }
 @media (min-width: 900px) {
   .panel figcaption { font-size: 18px; }
   .panel q { font-size: 19px; }
