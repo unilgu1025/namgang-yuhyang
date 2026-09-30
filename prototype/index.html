@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Gowun+Dodum&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/src/tokens.css" />
+  <link rel="stylesheet" href="/src/comic.css" />
   <style>
     body { overflow: hidden; }
     .hub {
@@ -45,6 +46,26 @@
       padding: 0 16px;
     }
     .menu .btn { min-width: 240px; }
+    .menu .story { flex-basis: 100%; text-align: center; font-size: 15px; text-shadow: 0 1px 4px var(--ink); }
+    .comic {
+      width: min(760px, calc(100vw - 24px)); max-height: 94dvh; padding: 20px 16px 16px;
+      border: 1px solid var(--amber); border-radius: 20px; background: var(--ink); color: var(--moon);
+      overflow: auto; overscroll-behavior: contain;
+    }
+    .comic::backdrop { background: rgb(4 5 6 / .8); }
+    .comic h2 { margin: 0 40px 14px; text-align: center; font: 700 22px/1.3 var(--font-title); color: var(--wick); }
+    .comic h2 small { display: block; font: 400 14px var(--font-ui); color: var(--gold); }
+    .comic .close {
+      position: absolute; top: 10px; right: 10px; width: 44px; height: 44px; border-radius: 50%;
+      border: 1px solid var(--mist); background: var(--night); color: var(--moon); font-size: 24px; cursor: pointer;
+    }
+    .comic .panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 12px; }
+    .comic .btn { display: flex; width: min(360px, 100%); margin: 16px auto 0; }
+    /* 가로 화면: 4컷을 한 줄로 (2×2면 세로가 모자람) */
+    @media (min-aspect-ratio: 5/4) {
+      .comic { width: min(1100px, calc(100vw - 32px)); }
+      .comic .panels { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
     .menu small { font-weight: 400; font-size: 14px; opacity: .8; }
     .credit {
       position: absolute;
@@ -75,10 +96,39 @@
     <img class="keyart" src="/assets/title.jpg" width="1600" height="900" fetchpriority="high" alt="비 내리는 밤, 금빛 유등이 켜진 남강과 그 위로 적힌 남강유향 글씨" />
     <p class="credit">창작 판타지 · 실제 역사·제품 효능과 무관</p>
     <nav class="menu" aria-label="게임 선택">
-      <a class="btn primary" href="swipe.html">물결을 가르는 향등 <small>스와이프</small></a>
-      <a class="btn primary" href="defense.html">안부를 띄우는 밤 <small>랜덤 디펜스</small></a>
+      <a class="btn primary" href="swipe.html" data-game="물결을 가르는 향등">물결을 가르는 향등 <small>스와이프</small></a>
+      <a class="btn primary" href="defense.html" data-game="안부를 띄우는 밤">안부를 띄우는 밤 <small>랜덤 디펜스</small></a>
+      <a class="link story" href="comic.html">남강유향의 이야기</a>
     </nav>
   </main>
+
+  <!-- 게임을 고르면 먼저 뜨는 4컷 창. 닫으면 고른 게임으로 간다 -->
+  <dialog id="comic" class="comic" aria-labelledby="comic-title">
+    <button class="close" type="button" aria-label="닫고 게임 시작">×</button>
+    <h2 id="comic-title">남강유향의 이야기 <small>강 건너 보내는 안부</small></h2>
+    <div class="panels" id="comic-panels"></div>
+    <a id="comic-start" class="btn primary" href="#">시작하기</a>
+  </dialog>
+  <script type="module">
+    import { renderComic } from '/src/comic.ts';
+    const dlg = document.getElementById('comic');
+    const start = document.getElementById('comic-start');
+    renderComic(document.getElementById('comic-panels'));
+    const go = () => { location.href = start.href; };
+    document.querySelectorAll('[data-game]').forEach((a) => a.addEventListener('click', (e) => {
+      e.preventDefault();
+      start.href = a.href;
+      start.textContent = `${a.dataset.game} 시작하기`;
+      dlg.showModal();
+      start.focus();
+    }));
+    dlg.querySelector('.close').onclick = go;
+    dlg.addEventListener('cancel', (e) => { e.preventDefault(); go(); }); // Esc
+    dlg.addEventListener('click', (e) => { // 창 바깥(어두운 배경)을 누르면
+      const r = dlg.getBoundingClientRect();
+      if (e.target === dlg && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom)) go();
+    });
+  </script>
   <script type="module" src="/src/bgm.ts"></script>
 </body>
 </html>

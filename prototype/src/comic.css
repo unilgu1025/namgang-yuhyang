@@ -1,0 +1,17 @@
+/* 4컷 공용 모양 (타이틀 창·comic.html) */
+.panel { position: relative; min-width: 0; margin: 0; display: grid; gap: 8px; align-content: start; }
+.panel img {
+  width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; display: block;
+  border-radius: 12px; border: 1px solid rgb(194 130 75 / .5); background: var(--night);
+}
+.panel.empty img { visibility: hidden; }
+.panel.empty::before {
+  content: attr(data-n); position: absolute; left: 0; right: 0; top: 0; aspect-ratio: 1;
+  display: grid; place-items: center; border-radius: 12px;
+  font: 700 48px var(--font-title); color: rgb(252 196 65 / .5);
+  background: radial-gradient(circle, rgb(252 196 65 / .12), transparent 60%), var(--night);
+}
+.panel figcaption { font-size: 15px; line-height: 1.45; color: var(--moon); text-align: center; }
+.panel q { display: block; font-family: var(--font-title); color: var(--wick); }
+/* 마지막 컷은 대사가 아니라 관람객에게 건네는 말 */
+.panel:nth-child(4) q { quotes: none; color: var(--gold); }

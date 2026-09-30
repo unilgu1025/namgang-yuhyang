@@ -109,3 +109,12 @@ CC0는 출처 표기 의무가 없지만 감사 표시로 기록한다. 원본�
 - `bumper_wave_knot_v1.png`은 파괴되지 않으며, 반사체 외곽의 투명 여백을 제외한 내부 폭으로 충돌 영역을 잡는다.
 - 모든 스프라이트는 PNG 알파를 보존한다. 하드코딩된 흰색·검정 배경을 추가하지 않는다.
 - 이 에셋들은 창작 판타지 표현이다. 실물 향 제품 효능이나 역사적 사실을 주장하지 않는다.
+
++## 남강유향의 이야기 4컷 v1
+
+| 파일 | 분류 | 용도 | 배경 | 제작 방식 | 상태 |
+|---|---|---|---|---|---|
+| `assets/comic/comic_1_wait_v1.png` | 일러스트 | 4컷 1 기다림 | 불투명 | Built-in ImageGen | 확정 |
+| `assets/comic/comic_2_release_v1.png` | 일러스트 | 4컷 2 띄움 | 불투명 | Built-in ImageGen | 확정 |
+| `assets/comic/comic_3_arrive_v1.png` | 일러스트 | 4컷 3 닿음 | 불투명 | Built-in ImageGen | 확정 |
+| `assets/comic/comic_4_today_v1.png` | 일러스트 | 4컷 4 오늘 | 불투명 | Built-in ImageGen | 확정 |
