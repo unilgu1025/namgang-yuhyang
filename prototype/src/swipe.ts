@@ -518,7 +518,7 @@ const ui = {
     const copy = {
       clear: ['물결이 잔잔해졌습니다', stage.clearText],
       fail: ['등불이 꺼졌습니다', '어둠이 등불 경계선을 넘었습니다. 같은 물결에서 다시 띄울 수 있어요.'],
-      ending: ['남강에 향등이 돌아왔습니다', '세 번의 물결을 지나 강 위의 어둠이 모두 걷혔습니다. 띄운 불빛이 누군가의 안부로 닿기를.'],
+      ending: ['남강에 향등이 돌아왔습니다', '두 번의 물결을 지나 강 위의 어둠이 모두 걷혔습니다. 띄운 불빛이 누군가의 안부로 닿기를.'],
     }[kind];
     $('result-title').textContent = copy[0];
     $('result-text').textContent = copy[1];

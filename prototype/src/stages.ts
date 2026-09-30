@@ -34,7 +34,7 @@ export const STAGES: StageDef[] = [
   },
   {
     name: '흐르는 그림자',
-    clearText: '그림자가 물살에 풀려 흩어졌습니다.',
+    clearText: '강 위에 등불이 다시 켜졌습니다.',
     seed: 23,
     balls: 5,
     rows: 14,
@@ -44,18 +44,5 @@ export const STAGES: StageDef[] = [
     knotChance: 0.35,
     sachetTurns: [3, 7, 11],
     items: { chance: 0.4, pool: ['row', 'col', 'whirl', 'bomb'] },
-  },
-  {
-    name: '귀환의 등불',
-    clearText: '강 위에 등불이 다시 켜졌습니다.',
-    seed: 37,
-    balls: 8,
-    rows: 16,
-    start: { blocks: 13, hp: [6, 12], knots: 5 },
-    perRow: [3, 4],
-    hpMul: [1, 2],
-    knotChance: 0.45,
-    sachetTurns: [4, 9, 14],
-    items: { chance: 0.45, pool: ['row', 'col', 'whirl', 'whirl', 'bomb'] },
   },
 ];

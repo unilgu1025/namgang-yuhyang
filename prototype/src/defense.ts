@@ -752,7 +752,7 @@ const ui = {
   result(win: boolean) {
     $('result-title').textContent = win ? '안부등이 남강에 떠올랐습니다' : '성의 불빛이 꺼졌습니다';
     $('result-text').textContent = win
-      ? '세 물결을 지나 성의 불빛을 지켰습니다. 띄운 불빛이 누군가의 안부로 닿기를.'
+      ? '두 물결을 지나 성의 불빛을 지켰습니다. 띄운 불빛이 누군가의 안부로 닿기를.'
       : '어둠이 성에 닿았습니다. 유등을 합쳐 더 강하게 키워 보세요.';
     ($('result-scene') as HTMLImageElement).src = `assets/d/end_${win ? 'intact' : 'ruin'}.jpg`;
     const market = $('market');
