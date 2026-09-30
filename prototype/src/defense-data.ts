@@ -43,8 +43,8 @@ function mix(mist: number, boat: number): EnemyType[] {
 }
 
 export const WAVES: Wave[] = [
-  { name: '첫째 물결', hpMul: 1.3, gap: 1.1, spawns: mix(16, 5) },
-  { name: '마지막 물결', hpMul: 4.4, gap: 0.85, spawns: [...mix(24, 11), 'boss'] },
+  { name: '첫째 물결', hpMul: 1.3, gap: 0.9, spawns: mix(12, 4) },
+  { name: '마지막 물결', hpMul: 4.4, gap: 0.7, spawns: [...mix(16, 7), 'boss'] },
 ];
 
 export type Bonus = { guardDmg: number; comfortSlow: number; comfortRange: number; incenseGain: number };

@@ -8,7 +8,7 @@ const W = 720, H = 1280, TOP = 130, BOUNDARY_Y = 1050, LAUNCH_Y = 1150;
 const COLS = 7, LOSE_ROW = 10;
 const BALL_R = 13, MAX_BALLS = 60, PICKUP_R = 28;
 const FIRE_GAP = 70, COMBO_MS = 1200, AIM_GRAB_R = 140;
-const MARKET_URL = ''; // 온라인 마켓 주소가 정해지면 넣는다. 비어 있으면 결과 화면에서 링크를 숨긴다.
+const MARKET_URL = 'promo.html?from=swipe'; // 최종 클리어 시 남강유향 소개 + 경품 응모 페이지
 
 const cellX = (c: number) => 60 + 100 * c;
 const cellY = (r: number) => 180 + 90 * r;
@@ -539,12 +539,11 @@ const ui = {
     btn('타이틀로', false, () => { location.href = 'index.html'; });
     if (kind === 'ending' && MARKET_URL) {
       const a = document.createElement('a');
-      a.className = 'link';
+      a.className = 'btn primary';
       a.href = MARKET_URL;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      a.textContent = '남강유향 이야기 더 보기';
-      actions.append(a);
+      a.textContent = '배민 3만원권 응모하기';
+      actions.prepend(a);
+      first.className = 'btn';
     }
     $('result').hidden = false;
     first.focus();

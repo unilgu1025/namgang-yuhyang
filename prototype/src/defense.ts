@@ -14,7 +14,7 @@ const WIDE = matchMedia('(min-aspect-ratio: 5/4)');
 const VIEW = WIDE.matches ? { y: 118, h: 900 } : { y: 0, h: H };
 // ponytail: 창 비율이 바뀌면 새로고침(진행 초기화). 드문 경우라 상태 이전은 하지 않음
 WIDE.addEventListener('change', () => location.reload());
-const MARKET_URL = ''; // 온라인 마켓 주소가 정해지면 넣는다. 비어 있으면 승리 화면에서 링크를 숨긴다.
+const MARKET_URL = 'promo.html?from=defense'; // 승리 시 남강유향 소개 + 경품 응모 페이지
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // 물길(맵)은 시작 화면에서 고른다. 게임을 만들기 전에 정해지고 판 도중에는 바뀌지 않는다.
@@ -759,7 +759,7 @@ const ui = {
     market.replaceChildren();
     if (win && MARKET_URL) {
       const a = document.createElement('a');
-      Object.assign(a, { className: 'link', href: MARKET_URL, target: '_blank', rel: 'noopener', textContent: '남강유향 이야기 더 보기' });
+      Object.assign(a, { className: 'btn primary', href: MARKET_URL, textContent: '배민 3만원권 응모하기' });
       market.append(a);
     }
     $('result').hidden = false;
