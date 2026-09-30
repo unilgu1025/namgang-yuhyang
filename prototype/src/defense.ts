@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import {
-  CARDS, CRIT, ENEMY, GUARD_CHANCE, INCENSE, LEVEL_MUL, MAX_LEVEL, MAX_SLOW, START, UNIT, WAVES,
+  BOSS_SNUFF, CARDS, CRIT, ENEMY, GUARD_CHANCE, INCENSE, LEVEL_MUL, MAX_LEVEL, MAX_SLOW, START, UNIT, WAVES,
   type Bonus, type CardId, type EnemyType, type UnitType,
 } from './defense-data.ts';
 import { bindSound, buzz, loadSounds, pauseSound, playEnding, sfx, startBgm, toggleSound } from './sound.ts';
@@ -25,11 +25,13 @@ const SLOT_R = 48, DROP_R = 80;
 
 type Unit = {
   type: UnitType; level: number; slot: number; cd: number; attacking: boolean;
+  /** 대장선이 불을 끈 남은 시간(초). 0이면 켜져 있음 */
+  out?: number;
   sprite: Phaser.GameObjects.Sprite;
   marks: Phaser.GameObjects.Graphics; // 레벨 점 + 사거리 점선 원. 유등 위치를 원점으로 그린다
 };
 type Enemy = {
-  type: EnemyType; hp: number; maxHp: number; dist: number; slow: number; dead: boolean;
+  type: EnemyType; hp: number; maxHp: number; dist: number; slow: number; dead: boolean; skillCd?: number;
   sprite: Phaser.GameObjects.Sprite; bar: Phaser.GameObjects.Graphics; hpText: Phaser.GameObjects.Text;
 };
 /** 타격 숫자 색: Lv1 일반 = 회색, 합성으로 강해진 일반 = 빨강, 치명타 = 노랑 굵게(레벨과 무관하게 우선) */
@@ -85,6 +87,7 @@ class Defense extends Phaser.Scene {
     this.load.image('bg', 'assets/bg.jpg');
     const d = (k: string, n: number) => { for (let i = 1; i <= n; i++) this.load.image(`${k}${i}`, `assets/d/${k}${i}.webp`); };
     d('guard_idle', 3); d('guard_attack', 3); d('comfort_idle', 3); d('comfort_shield', 3);
+    this.load.image('snuff', 'assets/fx_snuff.png');
     d('boat', 3); d('mist', 3); d('orb', 2); d('dice', 3); d('collapse', 3);
     for (const s of ['intact', 'breach', 'ruin']) this.load.image(`end_${s}`, `assets/d/end_${s}.jpg`);
     loadSounds(this, ['bgm', 'ending', 'dice', 'hit', 'break', 'bell', 'echo', 'click', 'wall', 'sachet']);
@@ -286,6 +289,7 @@ class Defense extends Phaser.Scene {
       u.sprite.destroy();
       u.marks.destroy();
       other.level++;
+      if (other.out) { other.out = 0; this.relight(other); }
       this.drawMarks(other);
       ui.toast(`${UNIT[other.type].name} Lv${other.level} · 피해 ${Math.round(unitDamage(other, this.bonus))}${other.type === 'comfort' ? ` · 둔화 ${Math.round(unitSlow(other, this.bonus) * 100)}%` : ''}`);
       this.tweens.add({ targets: other.sprite, scale: unitScale(other), duration: 260, ease: 'Back.Out' });
@@ -364,7 +368,7 @@ class Defense extends Phaser.Scene {
     }
 
     const units = this.slots.filter((u): u is Unit => !!u && u.sprite.input?.dragState === 0);
-    const comforts = units.filter((u) => u.type === 'comfort');
+    const comforts = units.filter((u) => u.type === 'comfort' && !u.out);
     for (const e of this.enemies) {
       if (e.dead) continue;
       e.slow = 1;
@@ -380,12 +384,21 @@ class Defense extends Phaser.Scene {
       e.sprite.setPosition(p.x, p.y).setDepth(p.y).setScale(ENEMY[e.type].scale * (0.7 + 0.3 * t));
       e.sprite.setAlpha(e.slow < 1 ? 0.85 : 1);
       this.drawBar(e);
+      if (e.type === 'boss' && (e.skillCd = (e.skillCd ?? BOSS_SNUFF.every) - dt) <= 0) {
+        e.skillCd = BOSS_SNUFF.every;
+        this.snuff(e);
+      }
       if (t >= 1) this.leak(e);
       if (this.state !== 'play') return;
     }
     this.enemies = this.enemies.filter((e) => !e.dead);
 
     for (const u of units) {
+      if (u.out) {
+        u.out = Math.max(0, u.out - dt);
+        if (!u.out) this.relight(u);
+        continue;
+      }
       u.cd -= dt;
       const range = unitRange(u, this.bonus);
       const inRange = this.enemies.filter((e) => Phaser.Math.Distance.Between(u.sprite.x, u.sprite.y, e.sprite.x, e.sprite.y) < range);
@@ -481,12 +494,46 @@ class Defense extends Phaser.Scene {
     ui.update(this);
   }
 
+  /** 대장선 필살기: 어둠 한 줄기를 날려 무작위 유등의 불을 끈다 */
+  private snuff(boss: Enemy) {
+    const lit = this.slots.filter((u): u is Unit => !!u && !u.out);
+    if (!lit.length) return;
+    const u = Phaser.Utils.Array.GetRandom(lit);
+    const bolt = this.add.sprite(boss.sprite.x, boss.sprite.y, 'mist1').play('mist-move')
+      .setTint(0x6a3a8a).setScale(0.5).setDepth(1700);
+    sfx('echo', { volume: 0.7, rate: 0.6 });
+    ui.toast('대장선이 유등의 불을 껐습니다! 같은 유등을 합치면 다시 켜져요');
+    this.tweens.add({
+      targets: bolt, x: u.sprite.x, y: u.sprite.y, scale: 0.3, duration: 550, ease: 'Sine.In',
+      onComplete: () => {
+        bolt.destroy();
+        if (!u.sprite.active) return; // 날아가는 사이 합쳐져 사라졌다
+        u.out = BOSS_SNUFF.duration;
+        u.sprite.anims.pause();
+        u.sprite.setTint(0x6a7088).setAlpha(0.9);
+        const smoke = this.add.image(u.sprite.x, u.sprite.y + 10, 'snuff').setOrigin(0.5, 0.9).setDepth(u.sprite.depth + 1).setScale(0.55).setAlpha(0);
+        this.tweens.add({ targets: smoke, alpha: 1, y: u.sprite.y - 20, scale: 0.7, duration: 500, ease: 'Sine.Out' });
+        this.tweens.add({ targets: smoke, alpha: 0, delay: BOSS_SNUFF.duration * 1000 - 600, duration: 600, onComplete: () => smoke.destroy() });
+        if (!reducedMotion) this.cameras.main.shake(140, 0.004);
+        buzz(20);
+      },
+    });
+  }
+
+  private relight(u: Unit) {
+    if (!u.sprite.active) return;
+    u.sprite.clearTint().setAlpha(1).anims.resume();
+    const ring = this.add.circle(u.sprite.x, u.sprite.y, 26, 0xfcc441, 0.6).setBlendMode(Phaser.BlendModes.ADD).setDepth(1600);
+    this.tweens.add({ targets: ring, scale: 2.4, alpha: 0, duration: 400, onComplete: () => ring.destroy() });
+  }
+
   private leak(e: Enemy) {
     e.dead = true;
     e.bar.destroy();
     e.hpText.destroy();
     this.tweens.add({ targets: e.sprite, alpha: 0, duration: 200, onComplete: () => e.sprite.destroy() });
-    this.integrity = Math.max(0, this.integrity - ENEMY[e.type].leak);
+    // 대장선이 성에 닿으면 남은 불빛과 상관없이 패배
+    this.integrity = e.type === 'boss' ? 0 : Math.max(0, this.integrity - ENEMY[e.type].leak);
     sfx('bell', { volume: 0.4, detune: -1200 });
     buzz(40);
     if (!reducedMotion) this.cameras.main.shake(180, 0.005);

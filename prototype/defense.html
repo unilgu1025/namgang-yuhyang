@@ -172,6 +172,8 @@
     .incense[aria-disabled='true'] { cursor: not-allowed; color: var(--mist); }
     .incense.full[aria-disabled='false'] { color: var(--gold); }
     .incense-name { position: relative; z-index: 3; }
+    /* 준비 완료 때 연기·프레임 위에서도 읽히게 */
+    .incense.full .incense-name { color: #fffbe6; text-shadow: 0 0 4px #040506, 0 0 10px #040506, 0 0 16px rgb(252 196 65 / .9); }
     .incense-ready-label {
       position: absolute;
       left: 50%; top: -34%;

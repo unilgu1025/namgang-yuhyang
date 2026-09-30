@@ -18,15 +18,18 @@ export const MAX_SLOW = 0.7;
 export const CRIT = { chance: 0.15, mul: 2 };
 
 export const ENEMY: Record<EnemyType, { hp: number; speed: number; leak: number; seeds: number; incense: number; scale: number }> = {
-  mist: { hp: 40, speed: 172, leak: 1, seeds: 4, incense: 0.08, scale: 0.62 },
-  boat: { hp: 155, speed: 90, leak: 2, seeds: 9, incense: 0.08, scale: 0.62 },
-  boss: { hp: 1800, speed: 42, leak: 6, seeds: 40, incense: 0.2, scale: 1 },
+  mist: { hp: 40, speed: 230, leak: 1, seeds: 4, incense: 0.08, scale: 0.62 },
+  boat: { hp: 230, speed: 90, leak: 2, seeds: 9, incense: 0.08, scale: 0.62 },
+  boss: { hp: 1800, speed: 60, leak: 6, seeds: 40, incense: 0.2, scale: 1 },
 };
 
 /** 주사위는 자주 굴릴 수 있게: 비용 증가 폭을 작게, 처치 보상은 넉넉히 */
 export const START = { seeds: 50, integrity: 10, freeUnits: 3, rollCost: 8, rollStep: 3, waveBonus: 30 };
 
 /** 향 피우기(필살기): 일반 적은 power로 모두 쓰러지고, 대장선은 power + 최대 체력 × bossRatio */
+/** 대장선 필살기 '불 끄기': every초마다 무작위 유등 하나를 duration초 동안 끈다. 같은 유등을 합치면 다시 켜진다. */
+export const BOSS_SNUFF = { every: 5, duration: 4 };
+
 export const INCENSE = { power: 999, bossRatio: 0.3 };
 
 export type Wave = { name: string; hpMul: number; gap: number; spawns: EnemyType[] };
