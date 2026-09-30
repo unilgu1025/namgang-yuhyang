@@ -367,6 +367,9 @@
       .ribbon { left: calc(50% - 300px); right: auto; width: 600px; }
       #card-list { flex-direction: row; justify-content: center; gap: 2vw; }
       .card { width: min(28vw, 400px); }
+      /* 결과 액자를 화면 높이에 맞춰, 아래 문구·응모 버튼까지 가로 태블릿에서도 잘리지 않게 */
+      .result { width: auto; height: min(62dvh, 630px); margin-bottom: 24dvh; }
+      .result .market { top: 117%; }
     }
   </style>
 </head>
