@@ -7,11 +7,15 @@ import { bindSound, buzz, loadSounds, pauseSound, playEnding, sfx, startBgm, tog
 const W = 720, H = 1280, TOP = 130, BOUNDARY_Y = 1050, LAUNCH_Y = 1150;
 const COLS = 7, LOSE_ROW = 10;
 const BALL_R = 13, MAX_BALLS = 60, PICKUP_R = 28;
-const FIRE_GAP = 70, COMBO_MS = 1200, AIM_GRAB_R = 140;
+const FIRE_GAP = 45, COMBO_MS = 1200, AIM_GRAB_R = 140;
 const MARKET_URL = 'promo.html?from=swipe'; // 최종 클리어 시 남강유향 소개 + 경품 응모 페이지
 
 const cellX = (c: number) => 60 + 100 * c;
 const cellY = (r: number) => 180 + 90 * r;
+/** 칸 한 개 대각선(가로 100, 세로 90)의 기울기. 사선 아이템 아이콘·빛줄기에 쓴다 */
+const DIAG = Math.atan2(90, 100);
+/** 한 턴에 내려오는 줄 수 */
+const DROP = 2;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 type Kind = 'block' | 'knot' | 'sachet' | 'echo' | ItemKind;
@@ -27,8 +31,8 @@ type Ball = {
 };
 
 const ITEM_TEXT: Record<ItemKind, string> = {
-  row: '등불 띠 · 가로 한 줄',
-  col: '향 기둥 · 세로 한 줄',
+  row: '등불 띠 · 사선 ╱',
+  col: '향 기둥 · 사선 ╲',
   whirl: '소용돌이 · 방향 바뀜',
   bomb: '연등 · 주변 폭발',
 };
@@ -88,10 +92,17 @@ class Swipe extends Phaser.Scene {
 
     // 시작 배치: 위 3행에 매듭과 조각을 흩뿌린다
     const slots = this.shuffle([...Array(COLS * 3).keys()]);
-    for (let i = 0; i < stage.start.knots; i++) this.makeCell('knot', Math.floor(slots[i] / COLS), slots[i] % COLS, 0);
-    for (let i = stage.start.knots; i < stage.start.knots + stage.start.blocks; i++) {
+    let knots = 0;
+    const rest: number[] = [];
+    for (const s of slots) {
+      if (knots < stage.start.knots && this.knotFits(Math.floor(s / COLS), s % COLS)) {
+        this.makeCell('knot', Math.floor(s / COLS), s % COLS, 0);
+        knots++;
+      } else rest.push(s);
+    }
+    for (const s of rest.slice(0, stage.start.blocks)) {
       const [lo, hi] = stage.start.hp;
-      this.makeCell('block', Math.floor(slots[i] / COLS), slots[i] % COLS, lo + Math.floor(this.rand() * (hi - lo + 1)));
+      this.makeCell('block', Math.floor(s / COLS), s % COLS, lo + Math.floor(this.rand() * (hi - lo + 1)));
     }
 
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
@@ -125,6 +136,11 @@ class Swipe extends Phaser.Scene {
     return a;
   }
 
+  /** 매듭이 가로로 붙어 벽처럼 길을 막지 않게: 같은 줄 옆 칸에 매듭이 있으면 안 된다 */
+  private knotFits(row: number, col: number) {
+    return !this.cells.some((c) => !c.dead && c.kind === 'knot' && c.row === row && Math.abs(c.col - col) <= 1);
+  }
+
   private addBall() {
     const trail = this.add.image(this.launcherX, LAUNCH_Y, 'trail')
       .setOrigin(0.92, 0.5).setDisplaySize(110, 22).setAlpha(0.55).setBlendMode(Phaser.BlendModes.ADD).setVisible(false);
@@ -147,7 +163,9 @@ class Swipe extends Phaser.Scene {
     } else if (kind === 'sachet') {
       obj.add(this.add.image(0, 0, 'sachet').setDisplaySize(60, 60));
     } else if (kind !== 'echo') {
-      obj.add(this.add.image(0, 0, `item_${kind}`).setDisplaySize(72, 72));
+      const icon = this.add.image(0, 0, `item_${kind}`).setDisplaySize(72, 72);
+      if (kind === 'row' || kind === 'col') icon.setRotation(-DIAG); // 가로·세로 화살표를 사선으로 눕힌다
+      obj.add(icon);
     } else {
       // 잔향 조각: 옅은 백색 연무 + 회전 표시 (색만으로 구분하지 않도록)
       const g = this.add.graphics();
@@ -167,7 +185,7 @@ class Swipe extends Phaser.Scene {
     c.label!.setText(String(c.hp));
   }
 
-  private spawnRow() {
+  private spawnRow(row = 0) {
     const stage = STAGES[session.stage];
     const [lo, hi] = stage.hpMul;
     const [minN, maxN] = stage.perRow;
@@ -177,18 +195,24 @@ class Swipe extends Phaser.Scene {
     const placed: Cell[] = [];
     for (let i = 0; i < n; i++) {
       const hp = Math.max(1, Math.round(balls * (lo + this.rand() * (hi - lo))));
-      placed.push(this.makeCell('block', 0, cols[i], hp));
+      placed.push(this.makeCell('block', row, cols[i], hp));
     }
-    let free = n;
-    if (this.rand() < stage.knotChance) placed.push(this.makeCell('knot', 0, cols[free++], 0));
-    if (stage.sachetTurns.includes(this.turn)) placed.push(this.makeCell('sachet', 0, cols[free++], 0));
-    if (free < COLS && this.rand() < stage.items.chance) {
+    let free = cols.slice(n);
+    // 매듭은 한 줄에 최대 2개, 서로 붙지 않게
+    for (let k = 0; k < 2 && this.rand() < stage.knotChance; k++) {
+      const col = free.find((c) => this.knotFits(row, c));
+      if (col === undefined) break;
+      placed.push(this.makeCell('knot', row, col, 0));
+      free = free.filter((c) => c !== col);
+    }
+    if (row === 0 && stage.sachetTurns.includes(this.turn) && free.length) placed.push(this.makeCell('sachet', row, free.shift()!, 0));
+    if (free.length && this.rand() < stage.items.chance) {
       const pool = stage.items.pool;
-      placed.push(this.makeCell(pool[Math.floor(this.rand() * pool.length)], 0, cols[free], 0));
+      placed.push(this.makeCell(pool[Math.floor(this.rand() * pool.length)], row, free.shift()!, 0));
     }
     for (const c of placed) {
-      c.obj.setY(cellY(-1)).setAlpha(0);
-      this.tweens.add({ targets: c.obj, y: cellY(0), alpha: 1, duration: 260, ease: 'Sine.Out' });
+      c.obj.setY(cellY(row - DROP)).setAlpha(0);
+      this.tweens.add({ targets: c.obj, y: cellY(row), alpha: 1, duration: 260, ease: 'Sine.Out' });
     }
     this.rowsSpawned++;
   }
@@ -278,8 +302,8 @@ class Swipe extends Phaser.Scene {
     const dt = deltaMs / 1000;
     this.turnTime += dt;
     // ponytail: 10초 넘는 턴은 1.6배속. 체감이 부족하면 '회수' 버튼을 추가.
-    const boost = this.turnTime > 10 ? 1.6 : 1;
-    const speed = this.balls.length >= 8 ? 1230 : 1100;
+    const boost = this.turnTime > 3 ? 1.8 : 1;
+    const speed = 1500;
 
     this.fireTimer -= deltaMs;
     while (this.fired < this.balls.length && this.fireTimer <= 0) {
@@ -423,16 +447,15 @@ class Swipe extends Phaser.Scene {
       return;
     }
 
-    // 등불 띠(가로) / 향 기둥(세로): 줄 전체에 빛줄기
-    const row = c.kind === 'row';
-    const beam = row
-      ? this.add.rectangle(W / 2, y, W, 14, 0xfcc441, 0.85)
-      : this.add.rectangle(x, (TOP + BOUNDARY_Y) / 2, 14, BOUNDARY_Y - TOP, 0xfcc441, 0.85);
+    // 등불 띠(╱) / 향 기둥(╲): 사선 한 줄 전체에 빛줄기
+    const up = c.kind === 'row'; // ╱: 오른쪽으로 갈수록 위
+    const beam = this.add.rectangle(x, y, 1800, 14, 0xfcc441, 0.85).setRotation(up ? -DIAG : DIAG);
     beam.setBlendMode(Phaser.BlendModes.ADD).setDepth(6);
-    this.tweens.add({ targets: beam, alpha: 0, [row ? 'scaleY' : 'scaleX']: 2.5, duration: 260, onComplete: () => beam.destroy() });
+    this.tweens.add({ targets: beam, alpha: 0, scaleY: 2.5, duration: 260, onComplete: () => beam.destroy() });
     sfx('echo', { volume: 0.45, detune: 400 });
     for (const t of this.cells) {
-      if (t.kind === 'block' && (row ? t.row === c.row : t.col === c.col)) this.damageBlock(t, this.damage);
+      const dr = t.row - c.row, dc = t.col - c.col;
+      if (t.kind === 'block' && dr === (up ? -dc : dc)) this.damageBlock(t, this.damage);
     }
   }
 
@@ -456,10 +479,10 @@ class Swipe extends Phaser.Scene {
     this.cells = this.cells.filter((c) => !c.dead);
 
     for (const c of this.cells) {
-      c.row++;
+      c.row += DROP;
       this.tweens.add({ targets: c.obj, y: cellY(c.row), duration: 260, ease: 'Sine.InOut' });
     }
-    if (this.rowsSpawned < STAGES[session.stage].rows) this.spawnRow();
+    for (let r = DROP - 1; r >= 0; r--) if (this.rowsSpawned < STAGES[session.stage].rows) this.spawnRow(r);
     ui.hud(STAGES[session.stage].name, this.balls.length, this.pendingBonus);
 
     this.time.delayedCall(280, () => {
@@ -518,7 +541,7 @@ const ui = {
     const copy = {
       clear: ['물결이 잔잔해졌습니다', stage.clearText],
       fail: ['등불이 꺼졌습니다', '어둠이 등불 경계선을 넘었습니다. 같은 물결에서 다시 띄울 수 있어요.'],
-      ending: ['남강에 향등이 돌아왔습니다', '두 번의 물결을 지나 강 위의 어둠이 모두 걷혔습니다. 띄운 불빛이 누군가의 안부로 닿기를.'],
+      ending: ['남강에 향등이 돌아왔습니다', '물결을 지나 강 위의 어둠이 모두 걷혔습니다. 띄운 불빛이 누군가의 안부로 닿기를.'],
     }[kind];
     $('result-title').textContent = copy[0];
     $('result-text').textContent = copy[1];
