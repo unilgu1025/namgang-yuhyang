@@ -28,9 +28,13 @@
 
 | 파일 | 게임 키 | 용도 | 제작 | 상태 |
 |---|---|---|---|---|
-| `assets/cut_girl_pray_v1.svg` | `cut_girl.png` | 향 피우기 컷신: 강가에 무릎 꿇고 유등을 띄우는 한복 소녀 역광 실루엣 | Claude가 SVG로 직접 제작 | 임시. 회화풍 교체용 프롬프트는 `디펜스게임.md` §14 |
+| `assets/cut_girl_pray_v1.svg` | - | 향 피우기 컷신의 초기 역광 실루엣 | Claude가 SVG로 직접 제작 | 보존용. v02 회화풍 컷아웃으로 교체 |
+| `assets/cut_girl_release_lantern_v02.png` | `cut_girl.png` | 강가에 무릎 꿇고 두 손으로 연꽃 유등을 띄우는 한복 소녀 컷신 | Built-in ImageGen | 투명 배경, 600×720 출력 |
+| `assets/ui_incense_ready_frame_v01.png` | `incense_ready_frame.png` | 향 게이지 100% 버튼의 황동·청록 장식 프레임 | Built-in ImageGen | 투명 배경, 텍스트 없음 |
+| `assets/fx_incense_ready_ring_v01.png` | `fx_incense_ready_ring.png` | 향 충전 완료 및 컷신용 금빛·청록 파동 링 | Built-in ImageGen | 투명 배경, 512×512 출력 |
+| `assets/fx_incense_ready_sparks_v01.png` | `fx_incense_ready_sparks.png` | 향 충전 완료 버튼 위로 피어나는 연무·불씨 FX | Built-in ImageGen | 투명 배경, 512×640 출력 |
 
-컷신 배경은 `bg_ending_jinju_fortress_intact`, 떠나가는 유등은 `unit_comfort_lantern_idle_01`을 재사용한다.
+컷신 배경은 `bg_ending_jinju_fortress_intact`를 재사용한다. v02 소녀 컷아웃에는 두 손과 연꽃 유등이 한 장에 포함되어 좌표가 어긋나지 않는다.
 
 ## 사운드 v1 (외부 무료 에셋, 전부 CC0)
 

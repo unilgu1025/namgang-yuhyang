@@ -4,3 +4,9 @@
 .env
 .env.*
 secrets.json
+
+# 코덱스 QA 스크린샷·임시 파일
+.qa-*/
+.chrome-qa/
+qa-*.png
+qa-*.html

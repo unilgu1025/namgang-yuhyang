@@ -22,8 +22,10 @@ const jobs = [
   ['item_incense_pillar_v1.svg', 'item_col.png', { width: 128, height: 128 }],
   ['item_whirlpool_v1.svg', 'item_whirl.png', { width: 128, height: 128 }],
   ['item_lotus_lantern_v1.svg', 'item_bomb.png', { width: 128, height: 128 }],
-  // 향 피우기 컷신 소녀. 코덱스 그림이 생기면 이 줄의 원본만 바꾼다(같은 출력 이름)
-  ['cut_girl_pray_v1.svg', 'cut_girl.png', { width: 600 }],
+  ['cut_girl_release_lantern_v02.png', 'cut_girl.png', { width: 600, height: 720, fit: 'contain' }],
+  ['ui_incense_ready_frame_v01.png', 'incense_ready_frame.png', { width: 512, height: 512, fit: 'contain' }],
+  ['fx_incense_ready_ring_v01.png', 'fx_incense_ready_ring.png', { width: 512, height: 512, fit: 'contain' }],
+  ['fx_incense_ready_sparks_v01.png', 'fx_incense_ready_sparks.png', { width: 512, height: 640, fit: 'contain' }],
 ];
 
 for (const [src, out, resize, fmt] of jobs) {

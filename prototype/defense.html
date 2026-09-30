@@ -117,6 +117,9 @@
     .seedbar i { display: block; height: 100%; width: calc(var(--p, 0) * 100%); background: linear-gradient(90deg, var(--amber), var(--gold)); border-radius: inherit; transition: width .25s; }
     .roll.ready .seedbar i { background: linear-gradient(90deg, var(--gold), var(--wick)); box-shadow: 0 0 8px var(--gold); }
     .incense {
+      position: relative;
+      isolation: isolate;
+      overflow: visible;
       aspect-ratio: 1;
       border-radius: 999px;
       background:
@@ -129,9 +132,68 @@
       line-height: 1.2;
       text-align: center;
     }
-    .incense.full { box-shadow: 0 0 18px rgb(252 196 65 / .7); }
+    .incense.full {
+      box-shadow: 0 0 22px rgb(252 196 65 / .9);
+      animation: incense-ready-button 1.15s ease-in-out infinite alternate;
+    }
+    .incense.full::before {
+      content: '';
+      position: absolute;
+      inset: -38%;
+      z-index: 2;
+      pointer-events: none;
+      background:
+        url(/assets/incense_ready_frame.png) center / contain no-repeat,
+        url(/assets/fx_incense_ready_ring.png) center / 86% 86% no-repeat;
+      filter: drop-shadow(0 0 8px rgb(252 196 65 / .8));
+      animation: incense-ready-ring 1.8s ease-in-out infinite;
+    }
+    .incense.full::after {
+      content: '';
+      position: absolute;
+      left: -54%; right: -54%; bottom: -48%;
+      height: 230%;
+      z-index: 1;
+      pointer-events: none;
+      background: url(/assets/fx_incense_ready_sparks.png) center bottom / contain no-repeat;
+      animation: incense-ready-sparks 1.5s ease-out infinite;
+    }
+    @keyframes incense-ready-button { to { transform: scale(1.045); color: var(--wick); } }
+    @keyframes incense-ready-ring {
+      0% { opacity: .62; transform: scale(.9) rotate(-4deg); }
+      55% { opacity: 1; }
+      100% { opacity: .72; transform: scale(1.08) rotate(4deg); }
+    }
+    @keyframes incense-ready-sparks {
+      0% { opacity: 0; transform: translateY(7%) scale(.86); }
+      22%, 68% { opacity: .9; }
+      100% { opacity: 0; transform: translateY(-8%) scale(1.06); }
+    }
     .incense[aria-disabled='true'] { cursor: not-allowed; color: var(--mist); }
     .incense.full[aria-disabled='false'] { color: var(--gold); }
+    .incense-name { position: relative; z-index: 3; }
+    .incense-ready-label {
+      position: absolute;
+      left: 50%; top: -34%;
+      z-index: 4;
+      translate: -50% 0;
+      display: none;
+      width: max-content;
+      padding: .28em .62em;
+      border: 1px solid var(--gold);
+      border-radius: 999px;
+      background: rgb(4 5 6 / .92);
+      color: var(--wick);
+      font: 700 max(11px, calc(2.6 * var(--u)))/1 var(--font-title);
+      box-shadow: 0 0 12px rgb(252 196 65 / .55);
+    }
+    .incense.full .incense-ready-label { display: block; animation: incense-ready-label .8s ease-out both; }
+    @keyframes incense-ready-label { from { opacity: 0; transform: translateY(7px) scale(.88); } }
+    @media (prefers-reduced-motion: reduce) {
+      .incense.full, .incense.full::before, .incense.full::after, .incense.full .incense-ready-label { animation: none; }
+      .incense.full::before { opacity: .9; }
+      .incense.full::after { opacity: .55; }
+    }
 
     /* 물결 리본 */
     .ribbon {
@@ -290,31 +352,22 @@
       animation: kenburns 2.8s ease-out both;
     }
     @keyframes kenburns { from { transform: scale(1.18); filter: brightness(.5); } to { transform: scale(1.04); filter: brightness(.85); } }
-    /* 소녀·유등·빛을 한 묶음으로: 좌표는 소녀 그림 기준(두 손 = 폭 80%, 높이 55%) */
+    /* 소녀·유등·빛을 한 묶음으로: 새 그림 기준 유등 중심은 폭 88%, 높이 31% */
     .cut-actor {
-      position: absolute; left: 2%; bottom: 8%; height: 52%; aspect-ratio: 600 / 720;
+      position: absolute; left: -4%; bottom: 5%; height: 58%; aspect-ratio: 600 / 720;
       animation: girl 2.8s ease-out both;
     }
     @keyframes girl { from { opacity: 0; transform: translateX(-6%); } 18% { opacity: 1; transform: none; } }
     .cut-girl { width: 100%; height: 100%; max-width: none; }
     .cut-glow {
-      position: absolute; left: 80%; top: 55%; width: 140%; aspect-ratio: 1; translate: -50% -50%;
-      background: radial-gradient(circle, rgb(252 196 65 / .5), transparent 62%);
+      position: absolute; left: 88%; top: 31%; width: 48%; aspect-ratio: 1; translate: -50% -50%;
+      background:
+        url(/assets/fx_incense_ready_ring.png) center / contain no-repeat,
+        radial-gradient(circle, rgb(252 196 65 / .5), transparent 62%);
+      filter: drop-shadow(0 0 16px var(--gold));
       animation: glow 2.8s ease-in-out both;
     }
     @keyframes glow { 0% { opacity: 0; } 30%, 70% { opacity: 1; } 100% { opacity: .3; } }
-    .cut-lantern {
-      position: absolute; left: 80%; top: 55%; width: 30%; translate: -50% -62%;
-      filter: drop-shadow(0 0 14px var(--gold));
-      animation: drift 2.8s ease-in-out both;
-    }
-    /* 손을 떠나 강 한가운데로 멀어진다 */
-    @keyframes drift {
-      0%, 22% { transform: none; opacity: 0; }
-      30% { opacity: 1; transform: none; }
-      85% { transform: translate(260%, -300%) scale(.5); opacity: 1; }
-      100% { transform: translate(300%, -360%) scale(.4); opacity: 0; }
-    }
     .cut-line {
       position: absolute; left: 0; right: 0; top: 16%; z-index: 4;
       margin: 0; text-align: center;
@@ -401,7 +454,10 @@
 
     <aside class="side right">
       <div class="controls">
-        <button id="incense" class="dbtn incense" aria-disabled="true">향<br />피우기</button>
+        <button id="incense" class="dbtn incense" aria-disabled="true">
+          <span class="incense-name">향<br />피우기</span>
+          <span class="incense-ready-label" aria-hidden="true">준비 완료</span>
+        </button>
         <button id="roll" class="dbtn roll art" aria-disabled="true">
           <span class="roll-text">
             <b>주사위 굴림</b>
@@ -431,7 +487,6 @@
       <div class="cut-actor">
         <div class="cut-glow"></div>
         <img class="cut-girl" src="/assets/cut_girl.png" alt="" />
-        <img class="cut-lantern" src="/assets/d/comfort_idle1.webp" alt="" />
       </div>
       <p class="cut-line">안부를 띄웁니다</p>
       <div class="cut-flash"></div>
