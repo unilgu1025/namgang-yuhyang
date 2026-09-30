@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import {
-  BOSS_SNUFF, CARDS, CRIT, FAST_FORWARD, LUCKY_LV2_CHANCE, ENEMY, GUARD_CHANCE, INCENSE, LEVEL_MUL, MAX_LEVEL, MAX_SLOW, START, UNIT, WAVES,
+  BOSS_SNUFF, CARDS, CRIT, EXHIBITION_BOSS_CLEAR, FAST_FORWARD, LUCKY_LV2_CHANCE, ENEMY, GUARD_CHANCE, INCENSE, LEVEL_MUL, MAX_LEVEL, MAX_SLOW, START, UNIT, WAVES,
   type Bonus, type CardId, type EnemyType, type UnitType,
 } from './defense-data.ts';
 import { bindSound, buzz, loadSounds, pauseSound, playEnding, sfx, startBgm, toggleSound } from './sound.ts';
@@ -552,6 +552,12 @@ class Defense extends Phaser.Scene {
     e.bar.destroy();
     e.hpText.destroy();
     this.tweens.add({ targets: e.sprite, alpha: 0, duration: 200, onComplete: () => e.sprite.destroy() });
+    if (e.type === 'boss' && EXHIBITION_BOSS_CLEAR) {
+      // 전시 모드: 대장선이 성에 닿으면 조용히 클리어
+      this.enemies.forEach((o) => { if (!o.dead) this.leakSilently(o); });
+      this.queue = [];
+      return this.endWave();
+    }
     // 대장선이 성에 닿으면 남은 불빛과 상관없이 패배
     this.integrity = e.type === 'boss' ? 0 : Math.max(0, this.integrity - ENEMY[e.type].leak);
     sfx('bell', { volume: 0.4, detune: -1200 });
@@ -559,6 +565,13 @@ class Defense extends Phaser.Scene {
     if (!reducedMotion) this.cameras.main.shake(180, 0.005);
     ui.update(this);
     if (this.integrity <= 0) this.lose();
+  }
+
+  private leakSilently(e: Enemy) {
+    e.dead = true;
+    e.bar.destroy();
+    e.hpText.destroy();
+    this.tweens.add({ targets: e.sprite, alpha: 0, duration: 300, onComplete: () => e.sprite.destroy() });
   }
 
   burnIncense() {

@@ -32,6 +32,9 @@ export const START = { seeds: 50, integrity: 10, freeUnits: 3, rollCost: 8, roll
 
 /** 향 피우기(필살기): 일반 적은 power로 모두 쓰러지고, 대장선은 power + 최대 체력 × bossRatio */
 /** 대장선 필살기 '불 끄기': every초마다 무작위 유등 하나를 duration초 동안 끈다. 같은 유등을 합치면 다시 켜진다. */
+/** 행사장 전시용: 대장선이 성에 닿아도 패배 대신 클리어 처리한다(화면에는 알리지 않음). 전시가 끝나면 false로. */
+export const EXHIBITION_BOSS_CLEAR = true;
+
 export const BOSS_SNUFF = { every: 7, duration: 4 };
 
 export const INCENSE = { power: 999, bossRatio: 0.3 };
