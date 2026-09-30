@@ -11,7 +11,15 @@
   font: 700 48px var(--font-title); color: rgb(252 196 65 / .5);
   background: radial-gradient(circle, rgb(252 196 65 / .12), transparent 60%), var(--night);
 }
-.panel figcaption { font-size: 15px; line-height: 1.45; color: var(--moon); text-align: center; }
-.panel q { display: block; font-family: var(--font-title); color: var(--wick); }
+.panel figcaption {
+  padding: 10px 10px 12px; border-radius: 10px;
+  background: rgb(17 35 48 / .95); border: 1px solid rgb(252 196 65 / .35);
+  font-size: 16px; line-height: 1.45; color: #f3ead8; text-align: center; word-break: keep-all;
+}
+.panel q { display: block; margin-top: 4px; font: 700 17px/1.4 var(--font-title); color: var(--gold); }
 /* 마지막 컷은 대사가 아니라 관람객에게 건네는 말 */
-.panel:nth-child(4) q { quotes: none; color: var(--gold); }
+.panel:nth-child(4) q { quotes: none; color: var(--wick); }
+@media (min-width: 900px) {
+  .panel figcaption { font-size: 18px; }
+  .panel q { font-size: 19px; }
+}
