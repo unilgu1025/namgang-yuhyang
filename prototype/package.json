@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "node src/physics.test.ts && node src/defense-data.test.ts && node src/maps.test.ts"
+    "test": "node src/physics.test.ts && node src/defense-data.test.ts && node src/maps.test.ts && node src/chain.test.ts"
   },
   "dependencies": {
     "phaser": "^3.90.0"

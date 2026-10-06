@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#040506" />
+  <title>빛을 잇는 강 · 남강유향</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Gowun+Dodum&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/tokens.css" />
+  <style>
+    body { overflow: hidden; overscroll-behavior: none; display: grid; place-items: center; height: 100dvh; }
+    /* 9:16보다 긴 화면의 위아래 여백을 같은 배경의 흐린 사본으로 채운다 */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: -40px;
+      background: url(/assets/bg.jpg) center / cover;
+      filter: blur(20px) brightness(.5);
+    }
+    #stage {
+      position: relative;
+      width: min(100vw, 100dvh * 9 / 16);
+      aspect-ratio: 9 / 16;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #game { position: absolute; inset: 0; }
+    .hud {
+      position: absolute;
+      inset: 0 0 auto;
+      height: 10.2%;
+      padding: env(safe-area-inset-top) 12px 0;
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(rgb(4 5 6 / .85), rgb(4 5 6 / 0));
+      pointer-events: none;
+    }
+    .hud > * { pointer-events: auto; }
+    .icon-btn {
+      width: 48px; height: 48px;
+      display: grid; place-items: center;
+      border-radius: 999px;
+      border: 1px solid var(--mist);
+      background: rgb(17 35 48 / .9);
+      color: var(--moon);
+      cursor: pointer;
+    }
+    .icon-btn:focus-visible { outline: 2px solid var(--teal-glow); outline-offset: 3px; }
+    #stage-name { margin: 0; font: 700 18px/1.2 var(--font-title); color: var(--wick); }
+    .counters { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; margin: 0; font-size: 16px; font-variant-numeric: tabular-nums; }
+    #bonus { color: var(--gold); font-size: 16px; }
+    #hint {
+      position: absolute;
+      left: 16px; right: 16px;
+      bottom: 6%;
+      margin: 0;
+      text-align: center;
+      color: var(--wick);
+      font-size: 16px;
+      text-shadow: 0 1px 4px var(--ink);
+      pointer-events: none;
+    }
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgb(4 5 6 / .72);
+    }
+    .panel {
+      width: min(360px, 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      padding: 28px 24px;
+      border-radius: 12px;
+      border: 1px solid var(--amber);
+      background: var(--night);
+      box-shadow: 0 0 24px rgb(252 196 65 / .18);
+      text-align: center;
+    }
+    .panel h2 { text-wrap: balance; margin: 0 0 4px; font: 700 28px/1.3 var(--font-title); color: var(--wick); }
+    .panel p { margin: 0 0 8px; }
+    #result-actions { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
+    #result-actions .link { align-self: center; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <main id="stage">
+    <div id="game" role="application" aria-label="게임 화면. 화면을 누르거나 왼쪽·오른쪽 화살표로 조준하고, 손을 떼거나 스페이스로 발사합니다. 가운데 발사대를 누르거나 X로 다음 유등과 바꿉니다. Esc로 일시정지." tabindex="0"></div>
+
+    <header class="hud">
+      <button id="pause" class="icon-btn" aria-label="일시정지">
+        <svg width="16" height="18" viewBox="0 0 16 18" aria-hidden="true"><rect x="1" y="1" width="5" height="16" rx="1.5" fill="currentColor"/><rect x="10" y="1" width="5" height="16" rx="1.5" fill="currentColor"/></svg>
+      </button>
+      <h1 id="stage-name">빛을 잇는 강</h1>
+      <p class="counters" aria-live="polite">
+        <span id="left">남은 유등</span>
+      </p>
+    </header>
+
+    <p id="hint" hidden>쏘고 싶은 곳을 누르면 그 방향으로 유등이 나갑니다. 같은 색 셋을 이으면 사라져요.<br />가운데 발사대를 누르면 다음 유등과 바꿉니다</p>
+
+    <div id="pause-menu" class="overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden>
+      <div class="panel">
+        <h2 id="pause-title">잠시 멈춤</h2>
+        <button id="resume" class="btn primary">계속하기</button>
+        <button id="sound" class="btn" aria-pressed="true">소리·진동 켜짐</button>
+        <a class="btn" href="index.html">타이틀로</a>
+      </div>
+    </div>
+
+    <div id="result" class="overlay" role="dialog" aria-modal="true" aria-labelledby="result-title" hidden>
+      <div class="panel">
+        <h2 id="result-title"></h2>
+        <p id="result-text"></p>
+        <div id="result-actions"></div>
+      </div>
+    </div>
+  </main>
+  <script type="module" src="/src/zuma.ts"></script>
+</body>
+</html>
