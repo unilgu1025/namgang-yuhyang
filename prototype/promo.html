@@ -149,8 +149,7 @@
     </section>
   </main>
   <script type="module">
-    // Google Apps Script 웹 앱 주소 (apps-script/Code.gs 배포 후 받은 /exec 주소). 응모 번호는 그 구글 시트에 쌓인다.
-    const ENTRY_URL = 'https://script.google.com/macros/s/AKfycbxuhepBDbRmRDtxawGGGMRWj-W-JWsFC5Fa2MTo4bbDWXPbrOmY2ZnyBHNulBQqkT8B/exec';
+    import { ENTRY_URL, send } from '/src/entry.ts';
 
     const CLOSES = Date.parse('2026-10-20T00:00:00+09:00'); // 10월 19일 자정(한국시간)까지 응모 (남강유등축제 전시 기간)
     const $ = (id) => document.getElementById(id);
@@ -175,8 +174,7 @@
       submit.textContent = '보내는 중…';
       try {
         // Apps Script 응답(ok·duplicate·invalid)을 읽어 실제로 저장됐을 때만 완료를 띄운다
-        const res = await fetch(ENTRY_URL, { method: 'POST', body: new URLSearchParams({ phone: phone.value, game: from, agree: 'Y' }) });
-        const result = (await res.text()).trim();
+        const result = await send({ phone: phone.value, game: from, agree: 'Y' });
         if (result === 'duplicate') {
           say('이미 응모된 번호입니다. 1인 1회만 응모할 수 있어요.', 'err');
           submit.disabled = false;

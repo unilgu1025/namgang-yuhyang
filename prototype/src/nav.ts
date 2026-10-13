@@ -8,6 +8,7 @@ const PAGES = [
   { href: 'zuma.html', label: '빛을 잇는 강', sub: '유등 잇기' },
   { href: 'comic.html', label: '남강유향의 이야기', sub: '4컷 만화' },
   { href: 'promo.html', label: '남강유향 알아보기', sub: '소개 · 경품 응모' },
+  { href: 'guestbook.html', label: '그림 방명록', sub: '안부를 그림으로 남기기' },
 ];
 
 const here = location.pathname.split('/').pop() || 'index.html';

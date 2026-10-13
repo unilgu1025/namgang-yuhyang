@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#040506" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icon-192.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="남강유향" />
+  <title>그림 방명록 · 남강유향</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Gowun+Dodum&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/tokens.css" />
+  <style>
+    body { background: linear-gradient(var(--ink), var(--night) 60%, var(--ink)); }
+    main { max-width: 1000px; margin: 0 auto; padding: calc(20px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom)) 48px; }
+    h1 { margin: 0; font: 700 clamp(26px, 6vw, 34px)/1.3 var(--font-title); color: var(--wick); }
+    .sub { margin: 4px 0 16px; color: var(--gold); }
+    .pad-wrap { position: relative; }
+    #pad {
+      display: block; width: 100%; height: auto; aspect-ratio: 3 / 2;
+      border-radius: 16px; border: 2px solid var(--amber); background: #0b1820;
+      touch-action: none; cursor: crosshair;
+    }
+    .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin: 14px 0; }
+    .group { display: flex; gap: 8px; align-items: center; }
+    .tool {
+      min-height: 52px; min-width: 88px; padding: 0 18px; border-radius: 999px;
+      border: 1px solid var(--mist); background: var(--night); color: var(--moon);
+      font: 700 18px var(--font-ui); cursor: pointer;
+    }
+    .tool[aria-pressed='true'] { background: var(--gold); color: var(--ink); border-color: transparent; }
+    .swatch {
+      width: 46px; height: 46px; border-radius: 50%; padding: 0; cursor: pointer;
+      background: var(--c); border: 3px solid var(--night); box-shadow: 0 0 0 2px var(--mist);
+    }
+    .swatch[aria-pressed='true'] { box-shadow: 0 0 0 3px var(--wick), 0 0 14px var(--c); }
+    .tool:focus-visible, .swatch:focus-visible { outline: 2px solid var(--teal-glow); outline-offset: 3px; }
+    .actions { display: flex; gap: 10px; margin-left: auto; }
+    .actions .btn[disabled] { opacity: .45; cursor: not-allowed; }
+    #toast {
+      position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+      padding: 16px 28px; border-radius: 999px; background: rgb(4 5 6 / .88); border: 1px solid var(--gold);
+      font: 700 22px var(--font-title); color: var(--wick); pointer-events: none;
+    }
+    h2 { margin: 32px 0 4px; font: 700 24px var(--font-title); color: var(--wick); }
+    #wall-count { margin: 0 0 12px; color: var(--teal-glow); }
+    #wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 45%), 1fr)); gap: 12px; }
+    #wall img { width: 100%; height: auto; aspect-ratio: 3 / 2; border-radius: 10px; border: 1px solid rgb(194 130 75 / .5); display: block; }
+    @media (max-width: 640px) { .actions { margin-left: 0; width: 100%; } .actions .btn { flex: 1; padding: 0 12px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>그림 방명록</h1>
+    <p class="sub">남강에 띄우고 싶은 안부를 그림으로 남겨 주세요</p>
+
+    <div class="pad-wrap">
+      <canvas id="pad" aria-label="그림판. 펜이나 손가락으로 그립니다."></canvas>
+      <p id="toast" role="status" hidden>방명록에 남겼어요!</p>
+    </div>
+
+    <div class="tools">
+      <div class="group" id="pens" role="group" aria-label="펜 종류"></div>
+      <div class="group" id="colors" role="group" aria-label="색"></div>
+      <div class="actions">
+        <button id="undo" class="btn" type="button">되돌리기</button>
+        <button id="clear" class="btn" type="button">모두 지우기</button>
+        <button id="save" class="btn primary" type="button">남기기</button>
+      </div>
+    </div>
+
+    <h2>방명록 벽</h2>
+    <p id="wall-count">0개의 안부</p>
+    <div id="wall"></div>
+  </main>
+  <script type="module" src="/src/guestbook.ts"></script>
+  <script type="module" src="/src/bgm.ts"></script>
+  <script type="module" src="/src/pwa.ts"></script>
+  <script type="module" src="/src/nav.ts"></script>
+</body>
+</html>
